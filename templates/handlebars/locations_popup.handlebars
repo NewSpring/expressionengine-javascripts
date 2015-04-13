@@ -1,0 +1,14 @@
+<h5>{{campus}} Campus</h5>
+<h6>Address</h6>
+<p>{{#if location.name}}{{location.name}}<br>{{/if}}
+  {{#if location.street1}}{{location.street1}}{{/if}}
+  {{#if location.street2}}{{location.street2}}{{/if}}
+  <br>{{location.city}}, {{location.state}} {{location.zip}}</p>
+
+<h6>Contact</h6>
+<ul>
+{{#if description}}
+<li>{{number}}</li>
+{{/if}}
+<li><a href="mailto:{{email}}">{{email}}</a></li>
+</ul>

@@ -1,0 +1,81 @@
+{{!--  NOT PRODUCTION READY CODE  --}}
+
+<section class="section--condensed flush">
+	<div class="shell">
+		{{#if 0.spelling.correctedQuery}}
+		<div data-search-link="masthead">
+
+			<h3>Are you looking for
+				<strong>{{0.spelling.correctedQuery}}?</strong>
+			</h3>
+
+		</div>
+		{{else}}
+		<h3 class="flush">
+			<strong>{{0.pagination.request.0.totalResults}}</strong>
+			results for
+			<strong>{{0.pagination.request.0.searchTerms}}!</strong>
+		</h3>
+		{{/if}}
+	</div>
+</section>
+
+
+<section class="section--grey section--condensed">
+
+	<div class="shell">
+		<div class="grid">
+			<div class="grid__item two-thirds portable-one-whole palm-wide-one-whole palm-one-whole">
+			{{#each 0.items}}
+				<div class="grid flush">
+					<div class="grid__item card hard">
+					{{#if image}}
+						<div class="grid__item hard flush one-whole lap-and-up-one-sixth">
+							<a href="{{sslUrl}}" class="image ratio--square flush background--fill" style="background-image: url({{ image.src }});">
+							</a>
+
+						</div>{{/if}}<!--
+						--><div class="grid__item one-whole {{#if image}}lap-and-up-five-sixths{{/if}} hard flush">
+								<div class="card flush">
+									<h3 class="flush"><a href="{{sslUrl}}" class="dark">{{title}}</a></h3>
+									<small>{{{protocolLess sslUrl}}}</small>
+									<p>
+										{{description}} <a href="{{sslUrl}}" class="link--arrow flush">Read More</a>
+									</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{{/each}}
+			</div><!--
+
+			--><div class="grid__item one-third portable-one-whole palm-wide-one-whole palm-one-whole"><!--
+				--><div class="grid__item flush hard one-whole">
+					<div class="card">
+						<h4>On our other sites</h4>
+						{{#each 1.items}}
+							<p>
+								<a href="{{sslUrl}}" class="dark">{{title}}</a>
+								<small>
+									{{{justSite sslUrl}}}
+								</small>
+							</p>
+
+						{{/each}}
+					</div>
+				</div>
+			</div>{{#if 0.pagination.nextPage}}<!--
+			--><div class="grid__item one-whole centered">
+					<div class="tiles tiles--horizontal outlined">
+					<div class="tile__item icon icon--small {{#if 0.pagination.previousPage}}icon--arrow-left{{/if}}" {{#if 0.pagination.previousPage}}data-search-previous{{/if}}></div><!--
+					--><div class="tile__item icon icon--small {{#if 0.pagination.nextPage}}icon--arrow-right{{/if}}" {{#if 0.pagination.nextPage}}data-search-next{{/if}}></div>
+			</div>{{/if}}<!--
+			--><div class="grid__item one-whole centered">
+				<small class="soft-half">Results powered by <span class="google-logo background--fill"></span></small>
+			</div>
+
+		</div>
+	</div>
+
+
+</section>

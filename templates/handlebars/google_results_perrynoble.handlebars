@@ -1,0 +1,29 @@
+{{!--  perrynoble.com google results  --}}
+
+<div class="shell hard">
+	<div class="grid flush">
+		{{#each 0.items}}<div class="result-item grid__item one-whole flush">
+			<h3><a href="{{sslUrl}}" class="dark">{{title}}</a></h3>
+			<p>{{description}}</p>
+			<p class="flush"><a href="{{sslUrl}}" class="link--arrow flush">Read More</a></p>
+		</div>{{/each}}
+</div>
+
+{{#if 0.pagination.nextPage}}<div class="grid floating floating--right flush">
+	{{#if 0.pagination.previousPage}}<div class="grid__item one-half flush hard">
+		<a href="#search-bar" class="block btn btn--filled btn--paginate btn--paginate-prev flush" data-search-previous data-scroll><i class="fa fa-caret-left"></i>&nbsp; Prev</a>
+	</div>{{/if}}{{#if 0.pagination.nextPage}}<div class="grid__item one-half flush hard">
+		<a href="#search-bar" class="block btn btn--filled btn--paginate btn--paginate-next flush" data-search-next data-scroll>Next &nbsp;<i class="fa fa-caret-right"></i></a>
+	</div>{{/if}}
+</div>{{/if}}
+
+<div class="shell soft-half">
+	<div class="grid flush">
+		<div class="grid__item one-whole centered hard flush">
+			<small class="flush">Results powered by</small><br>
+			<span class="google-logo background--fill"></span>
+		</div>
+	</div>
+</div>
+
+</section>

@@ -1,0 +1,27 @@
+<div class="icon icon--close-modal fa fw fa-times" data-modal-close="jobs-subscribe"></div>
+
+
+<section>
+	<div class="shell">
+		<div class="grid">
+			<div class="text--constrained">
+				<div class="grid__item one-whole centered">
+					<h2>{{title}} Jobs</h2>
+					<h3>Sign Up for Notifications</h3>
+				</div><div class="grid__item one-whole">
+					<form action="https://feedpress.it/e/mailverify" method="post" target="popupwindow" onsubmit="window.open('https://feedpress.it/e/mailverify?feed_id=jobs-{{url_title}}', 'popupwindow','scrollbars=yes,width=550,height=400');return true">
+
+						<p>
+							<label for="email">E-Mail Address:</label>
+							<input type="text" name="email" placeholder="Email Address"/>
+						</p>
+
+						<input type="hidden" value="jobs-{{url_title}}" name="feed_id"/>
+
+						<input type="submit" value="Subscribe" class="submit ready btn btn--corners btn--filled"/>
+					</form>		
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,36 @@
+<div class="mobile-nav-container" data-modal="mobileNav">
+
+
+  <a href="/" class="logo floating floating__item ">
+      <div class="newspring--icon floating__item"></div>
+  </a>
+
+  <div class="close icon fa fw fa-times visuallyhidden--desk-and-up"
+    data-modal-close="mobileNav">
+  </div>
+
+  <ul class="nav nav--primary accordion mobile-nav" data-accordion="mobileNav">
+    <li class="" >
+      <a href="/" >Home</a>
+    </li>
+    {{#each nav}}
+    <li class="{{class}}" >
+      <a href="{{link}}" class="{{childClass}}" {{#if rel}}data-modal-open="{{rel}}"{{/if}}
+        {{#if data}}
+          data-{{data.attr}}="{{#each data.val}}{{val}},{{/each}}"
+        {{/if}}
+        {{#if trigger}}{{trigger}}="mobileNav"{{/if}}>{{text}}</a>
+      {{#if children}}
+      <ul>
+        {{#each children}}
+          <li class="{{class}}" >
+            <a href="{{link}}" class="{{class}}" {{#if rel}}data-modal-open="{{rel}}"{{/if}}>{{text}}</a>
+          </li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </li>
+    {{/each}}
+  </ul>
+
+</div>

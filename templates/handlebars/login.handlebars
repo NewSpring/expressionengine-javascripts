@@ -1,0 +1,44 @@
+<section>
+  <div class="shell">
+    <div class="grid centered">
+      <div class="grid__item one-half hard flush left">
+        {exp:zoo_visitor:login_form retrn="/dashboard" error_handling="inline"}
+
+        <fieldset>
+          <legend>Sign In</legend>
+
+            <p{if error:username} class="error"{/if}>
+              <label for="email">Email</label>
+              <input type="text" name="username" id="username" placeholder="slimer@ghostbusters.guru" data-parsley-error-message="A username is required." required>
+              {if error:username}
+              <span class="form--error">
+                {error:username}
+              </span>
+              {/if}
+            </p>
+
+            <p{if error:password} class="error"{/if}>
+              <label for="password">Password</label>
+              <input type="password" name="password" id="password" placeholder="MakinBaconPancakes" required>
+              {if error:password}
+              <span class="form--error">
+                {error:password}
+              </span>
+              {/if}
+            </p>
+
+            {if auto_login}
+            <p>
+              <label for="remember_me">Remember me?</label>
+              <input class='checkbox' type='checkbox' name='auto_login' value='1'  />
+            </p>
+            {/if}
+        </fieldset>
+        <button type="submit" name="submit" class="ready">Log In</button>
+        <h6>Don't have an account?  <a href="/signup">Sign Up.</a>  It's free!</h6>
+
+        {/exp:zoo_visitor:login_form}
+      </div>
+    </div>
+  </div>
+</section>
