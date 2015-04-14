@@ -3,9 +3,9 @@
 //= include ../images/echo.js
 //= include handlebars.runtime.js
 //= include handlebars_helpers.js
-//= include helpers.coffee.erb
+//= include helpers.coffee
 
-//= require_tree ../../templates/handlebars/
+//= require_tree ../templates/handlebars/
 
 ###
 
