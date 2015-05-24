@@ -1,4 +1,4 @@
-//= include ../sliders/slick.js
+
 
 ###
 @class Slider

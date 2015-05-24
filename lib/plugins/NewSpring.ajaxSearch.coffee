@@ -1,4 +1,4 @@
-//= include ../search/autocomplete.js
+
 
 ###
 Base class for all input controlled AJAX live searches

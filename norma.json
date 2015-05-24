@@ -1,9 +1,0 @@
-{
-  "name": "newspring-javascripts",
-  "tasks": {
-    "javascript": {
-      "src": "test/in/**",
-      "dest": "test/out"
-    }
-  }
-}

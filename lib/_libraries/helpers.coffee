@@ -1,15 +1,16 @@
 ###
-@class Debouncer
 
-@author
-  James E Baxley III
-  NewSpring Church
+  @class Debouncer
 
-@version 0.3
+  @author
+    James E Baxley III
+    NewSpring Church
 
-@note
-  Handles debouncing of events via requestAnimationFrame
-  @see http://www.html5rocks.com/en/tutorials/speed/animations/
+  @version 0.3
+
+  @note
+    Handles debouncing of events via requestAnimationFrame
+    @see http://www.html5rocks.com/en/tutorials/speed/animations/
 
 ###
 class Debouncer

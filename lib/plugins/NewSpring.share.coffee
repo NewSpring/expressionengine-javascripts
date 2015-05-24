@@ -100,7 +100,7 @@ class Share
 
           style = el.getAttribute('style')
 
-          left = ((rect.left + boundary.right) /2) - (el.offsetWidth/2)
+          left = ((rect.left + boundary.right)/2) - (el.offsetWidth/2)
           if left < 0
             left = 0
 
