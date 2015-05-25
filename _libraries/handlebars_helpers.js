@@ -1,5 +1,5 @@
 Handlebars.getTemplate = function(name, raw) {
-  sendBack = HandlebarsTemplates['handlebars/' + name]
+  sendBack = HandlebarsTemplates[name]
   return sendBack
 };
 

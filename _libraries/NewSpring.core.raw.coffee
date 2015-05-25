@@ -21,7 +21,7 @@ class NewSpringUtil
 
   ###
 
-  constructor: (@data) ->
+  constructor: (data) ->
 
 
     @_properties =
