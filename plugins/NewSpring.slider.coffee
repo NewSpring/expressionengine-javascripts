@@ -1,4 +1,7 @@
 
+`
+//= require ./../sliders/slick.js
+`
 
 ###
 @class Slider

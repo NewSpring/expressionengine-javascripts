@@ -1,5 +1,7 @@
 
-
+`
+//= require ./../players/audio.js
+`
 
 ###
 @class Audio

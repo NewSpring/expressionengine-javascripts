@@ -3,14 +3,6 @@ name: "newspring-javascripts"
 
 tasks:
 
-  # create combined javascript files from coffee tree and js tree
   javascript:
-    src: "_source/pre/**/*"
-    dest: "_source/tmp"
-
-  # merge js and coffee tree together
-  build:
-    "@extend": "javascript"
-    src: "_source/build.min"
-    dest: ""
-    order: "post"
+    src: "_source/**/*"
+    dest: "./"

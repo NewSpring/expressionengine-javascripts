@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "norma-javascript": "^0.4.2",
+    "norma-javascript": "^0.4.7",
     "normajs": "^1.5.0",
     "prettyjson": "^1.1.1"
   }

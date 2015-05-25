@@ -1,3 +1,8 @@
+
+`
+//= require ./../forms/ajaxForm.js
+`
+
 ###
 @class AjaxForm
 
