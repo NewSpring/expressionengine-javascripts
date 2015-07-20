@@ -3,6 +3,7 @@
 
 @author
   James E Baxley III
+  Edolyne Long
   NewSpring Church
 
 @version 0.1
@@ -29,7 +30,7 @@ class Googleapis
             {
               featureType: "road"
               elementType: "geometry"
-              stylers: [visibility: "off"]
+              stylers: [{visibility: "on"}, {lightness: 70}]
             }
             {
               featureType: "poi"
@@ -43,12 +44,12 @@ class Googleapis
             }
             {
               featureType: "water"
-              stylers: [lightness: 50]
+              stylers: [lightness: 0]
             }
             {
               featureType: "road"
               elementType: "labels"
-              stylers: [visibility: "off"]
+              stylers: [visibility: "on"]
             }
             {
               featureType: "transit"
@@ -57,7 +58,7 @@ class Googleapis
             {
               featureType: "administrative"
               elementType: "geometry"
-              stylers: [lightness: 40]
+              stylers: [lightness: 0]
             }
           ]
         network: [
@@ -199,14 +200,11 @@ class Googleapis
     @.getMarkers()
 
 
-
   getMarkers: () =>
 
     for location in core.flattenObject core.geolocation
       map = location.createMap()
       @_properties.maps.push map
-
-
 
   loadScript: () ->
 
@@ -267,7 +265,7 @@ class Geolocation
     if typeof choosenLocations is 'string'
       choosenLocations = [choosenLocations]
 
-    locations = try JSON.parse(params[2]); catch e then console.log e
+    locations = try JSON.parse(params[2]); catch e
 
     unless choosenLocations[0] is 'all'
       locations = locations.filter( (location) =>
@@ -318,11 +316,11 @@ class Geolocation
         core.removeClass trigger, 'btn--icon btn--filled'
         trigger.innerHTML = trigger.dataset.originalText
 
-      # for marker in @_properties.markers
-      #
-      #   if marker.url is ('/locations/' + campus.url)
-      #     marker.infoWindow.open(@_properties.map, marker)
-      window.location.href = campus.url
+      for marker in @_properties.markers
+        if marker.url is campus.url
+          marker.infoWindow.open(@_properties.map, marker)
+
+      # window.location.href = campus.url
     )
 
     @.events.on('finding-closest', () =>
@@ -342,6 +340,15 @@ class Geolocation
       #     core.modal[tmpl].toggleModal()
     )
 
+
+
+  createList: () =>
+    compiledTemplate = Handlebars.getTemplate('locations_listitem')
+    # infoWindow = new google.maps.InfoWindow({
+    #   content: compiledTemplate(location)
+    # })
+
+    # console.log @_properties.multi
 
 
   createMap: () =>
@@ -461,37 +468,79 @@ class Geolocation
         infoWindow: infoWindow
       })
 
-
       google.maps.event.addListener(marker, 'click', @.locationClicked(marker))
+
+      # If campus list exists let's turn on the functionality for click events
+      if document.querySelectorAll('[data-campus-item]').length != 0 then @.campusClickListener()
 
       @_properties.markers.push marker
 
     this
 
+  closeAllMarkers: () =>
+    for markers in @_properties.markers
+      markers.infoWindow.close()
 
+  # Find Campus Items, Add Click Listener to open Marker
+  campusClickListener: () =>
+
+    campusItems = document.querySelectorAll('[data-campus-item]')
+
+    for campusItem in campusItems
+      campusTarget =  campusItem.getAttribute('data-campus-item')
+      campusItem.addEventListener('click', @.campusClicked(campusTarget))
+
+  campusClicked: (campusTarget) =>
+    () =>
+      # console.log campusTarget
+      # window.location.href = marker.url
+      for markers in @_properties.markers
+        unless markers._id.toLowerCase() is campusTarget.toLowerCase() then markers.infoWindow.close()
+
+        if markers._id.toLowerCase() is campusTarget.toLowerCase()
+          markers.infoWindow.open(@_properties.map, markers)
+
+      # Add Active Class To Location Item
+      inactiveCampus = []
+
+      for location in document.querySelectorAll('[data-campus-item]')
+        locationValue = location.getAttribute('data-campus-item')
+        if locationValue is campusTarget
+          activeCampus = location
+        else
+          inactiveCampus.push(location)
+
+      @.activeLocation(inactiveCampus, activeCampus)
 
   locationClicked: (marker) =>
     () =>
-      window.location.href = marker.url
-      # for markers in @_properties.markers
-      #   unless markers._id.toLowerCase() is marker._id.toLowerCase() then markers.infoWindow.close()
-      # marker.infoWindow.open(@_properties.map, marker)
+      # window.location.href = marker.url
+      for markers in @_properties.markers
+        unless markers._id.toLowerCase() is marker._id.toLowerCase() then markers.infoWindow.close()
+      marker.infoWindow.open(@_properties.map, marker)
 
+      # Add Active Class To Location Item
+      inactiveCampus = []
 
+      for location in document.querySelectorAll('[data-campus-item]')
+        locationValue = location.getAttribute('data-campus-item')
+        if locationValue is marker._id
+          activeCampus = location
+        else
+          inactiveCampus.push(location)
+
+      @.activeLocation(inactiveCampus, activeCampus)
 
   setCenter: () =>
     @_properties.center = @_properties.map.getCenter()
 
     this
 
-
-
   fitCenter: () =>
 
     @_properties.map.setCenter(@_properties.center )
 
     this
-
 
 
   fitBounds: () =>
@@ -550,15 +599,34 @@ class Geolocation
 
     if google
       for trigger in findClosest
+
         if trigger.tagName is "INPUT"
           google.maps.event.addDomListener(trigger, 'blur', () =>
+
+            #Close Existing Map Markers
+            @.closeAllMarkers()
+
             @.events.emit('finding-closest')
+            # console.log trigger, trigger.value
             @.getUserLocation([trigger.value])
+
+            # Scroll to map
+            document.querySelector('[data-geolocation-scroll]').scrollIntoView({block: "end", behavior: "smooth"})
           )
-          google.maps.event.addDomListener(trigger, 'keyup', (e) =>
+          google.maps.event.addDomListener(trigger, 'keypress', (e) =>
             if e.keyCode is 13
+
+              #Close Existing Map Markers
+              @.closeAllMarkers()
+
+              # Blur to remove keyboard on mobile
+              trigger.blur()
+
               @.events.emit('finding-closest')
               @.getUserLocation([trigger.value])
+
+              # Scroll to map
+              document.querySelector('[data-geolocation-scroll]').scrollIntoView({block: "end", behavior: "smooth"})
           )
         else
           google.maps.event.addDomListener(trigger, 'click', () =>
@@ -567,8 +635,6 @@ class Geolocation
           )
 
     this
-
-
 
   getUserLocation: (location) =>
 
@@ -592,13 +658,15 @@ class Geolocation
 
       returned = true
       for trigger in @_properties.findLocation
-        core.removeClass trigger, 'btn--icon btn--filled'
+        # core.removeClass trigger, 'btn--icon btn--filled'
         trigger.innerHTML = 'Location services unavailable'
-
 
     if location
       @_properties.userLocation = {}
-      @.calculateDistance(location)
+      if document.querySelector('[data-campus-list]')?
+        @.campusSort(location)
+      else
+        @.calculateDistance(location)
     else
       callback = ->
         failure()
@@ -617,13 +685,99 @@ class Geolocation
               failure()
           )
 
+  campusSort: (location) =>
+
+    if typeof location is "string"
+      location = [location]
+    cb = (response, status) =>
+      if status is "OK"
+
+        sorted = response.rows[0].elements.slice()
+
+        campusList = []
+
+        for campus in response.rows[0].elements.slice()
+
+          for item in sorted
+
+            if item.distance.value is campus.distance.value
+
+              @_properties.userLocation or= {}
+              currentCampus = @_properties.locations[_i]
+
+              # Create an item in the campusList array
+              campusItem = {
+                _id  : "#{campus.distance.value}"
+                distance : "#{campus.distance.text}"
+                title : "#{currentCampus._id}"
+                type : "#{currentCampus.type}"
+                status: "#{currentCampus.status}"
+                street1 : "#{currentCampus.location.street1}"
+                street2 : "#{currentCampus.location.street2}"
+                city : "#{currentCampus.location.city}"
+                state : "#{currentCampus.location.state}"
+                zip : "#{currentCampus.location.zip}"
+                url : "#{currentCampus.url}"
+              }
+
+              # Inject that item in the campusList array
+              campusList.push(campusItem)
+
+        campusList.sort (a, b) ->
+          a._id - b._id
+
+        campusListTarget = document.querySelector('[data-campus-list]')
+
+        campusListTarget.innerHTML = ""
+
+        for campus in campusList
+
+          campusItem = '<li data-campus-item="' + campus.title + '">
+            <div class="soft-half soft--quarter-ends">
+              <h6 class="float--right">' + campus.distance + '</h6>
+              <h5>' + campus.title + (if campus.type is 'house' then ' <span class="superscript"><i class="fa fa-home color--info"></i></span>' else '') + '</h5>
+              <small class="push-quarter--bottom portable-flush--bottom anchored-flush--bottom">' + (if campus.status is 'Coming Soon' then '<strong class="gray">Coming Soon</strong><br>' else '') + (if campus.street1 isnt 'false' then campus.street1 + '<br>' else '') + (if campus.street2 isnt 'false' then campus.street2 + '<br>' else '') + (if campus.city isnt 'false' then campus.city + ', ' else '') + (if campus.state isnt 'false' then campus.state + ' ' else '') + (if campus.zip isnt 'false' then campus.zip else '') + '</small>
+              <br class="visuallyhidden--portable visuallyhidden--anchored">' +
+            (if campus.status != 'Coming Soon' then '<a href="' + campus.url + '" class="link--arrow visuallyhidden--portable visuallyhidden--anchored flush">View Details</a>' else '') +
+            '</div>
+          </li>'
+
+          campusListTarget.innerHTML = campusListTarget.innerHTML + campusItem
+
+          # Attach Click Events Again
+          @.campusClickListener()
+
+          @.events.emit('campus-found', campusList[0])
 
 
+        @.activeLocation(document.querySelectorAll('[data-campus-item]'), document.querySelectorAll('[data-campus-item]')[0])
+
+    @_properties.service.getDistanceMatrix(
+      origins: location
+      destinations: @_properties.locations
+      travelMode: google.maps.TravelMode.DRIVING
+      unitSystem: google.maps.UnitSystem.IMPERIAL
+      durationInTraffic: true
+      avoidHighways: false
+      avoidTolls: false
+    , cb)
+
+  # Add Active State to the first list item
+  activeLocation: (allLocations, activeLocation)=>
+    if allLocations.length?
+      for location in allLocations
+        core.removeClass location, "active"
+    else
+      core.removeClass allLocations, "active"
+    core.addClass activeLocation, "active"
 
   calculateDistance: (location) =>
 
+    if typeof location is "string"
+      location = [location]
     cb = (response, status) =>
       if status is "OK"
+
         sorted = response.rows[0].elements.slice()
 
         sorted.sort( (a, b) ->
@@ -636,10 +790,9 @@ class Geolocation
 
         for distance in response.rows[0].elements
           if distance.duration.value is sorted[0].duration.value
+            @_properties.userLocation or= {}
             @_properties.userLocation.closestCampus = @_properties.locations[_i]
             @.events.emit('campus-found', @_properties.locations[_i])
-
-
 
     @_properties.service.getDistanceMatrix(
       origins: location
@@ -650,8 +803,6 @@ class Geolocation
       avoidHighways: false
       avoidTolls: false
     , cb)
-
-
 
 if core?
   callback = () ->
