@@ -698,12 +698,12 @@ class Geolocation
 
         for campus in response.rows[0].elements.slice()
 
-          for item in sorted
+          for item, itemIndex in sorted
 
             if item.distance.value is campus.distance.value
 
               @_properties.userLocation or= {}
-              currentCampus = @_properties.locations[_i]
+              currentCampus = @_properties.locations[itemIndex]
 
               # Create an item in the campusList array
               campusItem = {
