@@ -147,7 +147,7 @@ class BackgroundPlayer
 
     if core.isMobile()
       # Turned off for launch until panning is built
-      # @.determineDesiredPositioning('img').setUpImg()
+      @.determineDesiredPositioning('img').setUpImg()
     else
       @.determineDesiredPositioning('video').setUpVideo()
 
