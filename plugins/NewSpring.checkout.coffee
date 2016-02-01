@@ -31,8 +31,8 @@ class Checkout
       triggers: {}
       mappedFields: try JSON.parse(@data.dataset.checkoutInfo); catch e then false
       form: document.getElementById params[1]
-      instant: if (params[3]) is 'download' or '0.00' then true else false
-      refresh: if (params[3]) is '0.00' then true else false
+      instant: if (params[3]) is 'download' or 'eventInstant' then true else false
+      refresh: if (params[3]) is 'eventInstant' then true else false
 
 
     if EventEmitter? then @.events = new EventEmitter()
