@@ -106,7 +106,7 @@ class Checkout
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
     if @_properties.refresh
-      location.reload(true)
+      document.location.reload(true)
 
 
 
