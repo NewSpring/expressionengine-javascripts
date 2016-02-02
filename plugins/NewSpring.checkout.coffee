@@ -106,7 +106,7 @@ class Checkout
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
     if @_properties.refresh
-      window.location.reload(true)
+      location.reload(true)
 
 
 
@@ -170,7 +170,7 @@ class Checkout
       @_properties.target.originalText = ''
       core.removeClass @_properties.target, 'btn--icon'
 
-    unless @_properties.instant
+    unless @_properties.instant or @_properties.refresh
       delay = setTimeout removeLoading, 5000
       
     this
