@@ -8,12 +8,7 @@ This is the vendor js libary for the [newspring.cc](http://newspring.cc) family 
 
 Questions? Email [web@newspring.cc](mailto:web@newspring.cc)
 
- _  ___   ___   ___   ___   ___
-/ |/ _ \ / _ \ / _ \ / _ \ / _ \
-| | | | | | | | | | | | | | | | |
-| | |_| | |_| | |_| | |_| | |_| |
-|_|\___/ \___( )___/ \___/ \___/
-             |/
+------------
 
 For creating symlinks, use the following and update paths according to your directory structure:
 
