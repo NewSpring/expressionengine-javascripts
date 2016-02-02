@@ -95,11 +95,8 @@ class Checkout
 
 
   processInstant: =>
-
-    if @_properties.refresh
-      location.reload()
+  
     @.cleanInstant()
-
 
 
   cleanInstant: =>
@@ -108,6 +105,8 @@ class Checkout
     for item in core.flattenObject core['checkout']
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
+    if @_properties.refresh
+      window.location.reload(true)
 
 
 
@@ -173,11 +172,7 @@ class Checkout
 
     unless @_properties.instant
       delay = setTimeout removeLoading, 5000
-
-
-
-
-
+      
     this
 
   mapFields: =>
