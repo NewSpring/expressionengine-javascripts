@@ -44,15 +44,17 @@ class Checkout
       # .bindAjax()
 
 
+  addLoading: (text) =>
+    @_properties.originalText = @_properties.target.innerText
+    @_properties.target.innerHTML = "#{text}...<span class='icon icon--loading'></span>"
+    core.addClass @_properties.target, 'btn--icon'
+      
   bindClick: =>
 
     checkout = (e) =>
 
       unless @_properties.instant
-        @_properties.originalText = @_properties.target.innerText
-        @_properties.target.innerHTML = 'Loading...<span class="icon icon--loading"></span>'
-        core.addClass @_properties.target, 'btn--icon'
-
+        @.addLoading("Loading")
 
       if @_properties.instant
 
@@ -60,6 +62,9 @@ class Checkout
         if typeof a.download is "undefined"
           e.preventDefault()
           window.open(@_properties._id, '_blank')
+        if @_properties.refresh
+          @.addLoading("Processing")
+          
       else
         e.preventDefault()
 
@@ -86,13 +91,13 @@ class Checkout
         @.loadModal(true)
       else
         @.loadModal()
-
-
     )
 
 
   processInstant: =>
 
+    if @_properties.refresh
+      location.reload()
     @.cleanInstant()
 
 
@@ -103,8 +108,6 @@ class Checkout
     for item in core.flattenObject core['checkout']
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
-    if @_properties.refresh
-      location.reload()
 
 
 
