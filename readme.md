@@ -14,3 +14,7 @@ Questions? Email [web@newspring.cc](mailto:web@newspring.cc)
 | | |_| | |_| | |_| | |_| | |_| |
 |_|\___/ \___( )___/ \___/ \___/
              |/
+
+For creating symlinks, use the following and update paths according to your directory structure:
+
+`ln -s ~/Sites/legacy-javascripts ~/Sites/newspring.cc/assets/_source/vendor/javascripts`
