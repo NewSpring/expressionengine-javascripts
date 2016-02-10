@@ -33,7 +33,6 @@ class Checkout
       form: document.getElementById params[1]
       instant: if (params[3]) is 'download' or 'eventInstant' then true else false
       refresh: if (params[3]) is 'eventInstant' then true else false
-      test: params[3]
 
 
     if EventEmitter? then @.events = new EventEmitter()
