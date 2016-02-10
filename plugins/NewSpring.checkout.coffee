@@ -105,10 +105,14 @@ class Checkout
     for item in core.flattenObject core['checkout']
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
+    
     if @_properties.refresh
-      document.location.reload(true)
-
-
+      setTimeout (->
+        window.location.reload(true)
+        return
+      ), 1000
+      # window.location = window.location.href
+      
 
   submitForm: =>
 
