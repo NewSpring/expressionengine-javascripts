@@ -89,6 +89,13 @@ class Checkout
       if @_properties.instant
         @.processInstant()
         @.loadModal(true)
+        
+        if @_properties.refresh
+          setTimeout (->
+            window.location.reload(true)
+            return
+          ), 1000
+        
       else
         @.loadModal()
     )
@@ -106,11 +113,11 @@ class Checkout
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
     
-    if @_properties.refresh
-      setTimeout (->
-        window.location.reload(true)
-        return
-      ), 1000
+    # if @_properties.refresh
+    #   setTimeout (->
+    #     window.location.reload(true)
+    #     return
+    #   ), 1000
       # window.location = window.location.href
       
 
