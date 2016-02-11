@@ -59,14 +59,14 @@ class Checkout
       if @_properties.instant
 
         a = document.createElement("a")
-        if typeof a.download is "undefined"
+        if typeof a.download is "undefined" and @_properties.refresh is false 
           e.preventDefault()
           window.open(@_properties._id, '_blank')
         if @_properties.refresh
           @.addLoading("Processing")
           
       else
-        e.preventDefault()
+        e.preventDefa2ult()
 
       @.clearCart()
 
@@ -94,7 +94,7 @@ class Checkout
           setTimeout (->
             window.location.reload(true)
             return
-          ), 1000
+          ), 500
         
       else
         @.loadModal()
@@ -112,13 +112,6 @@ class Checkout
     for item in core.flattenObject core['checkout']
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
-    
-    # if @_properties.refresh
-    #   setTimeout (->
-    #     window.location.reload(true)
-    #     return
-    #   ), 1000
-      # window.location = window.location.href
       
 
   submitForm: =>
@@ -142,7 +135,7 @@ class Checkout
 
 
 
-  loadModal: ( hidden) =>
+  loadModal: ( hidden ) =>
 
     # First things first, lets destroy existing modal
     existingModal = document
