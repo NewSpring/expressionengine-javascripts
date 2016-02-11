@@ -62,7 +62,6 @@ class Checkout
         if typeof a.download is "undefined" and @_properties.refresh is false 
           e.preventDefault()
           window.open(@_properties._id, '_blank')
-          console.log 'this'
         if @_properties.refresh
           @.addLoading("Processing")
           
