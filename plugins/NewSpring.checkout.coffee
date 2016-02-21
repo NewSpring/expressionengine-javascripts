@@ -31,8 +31,8 @@ class Checkout
       triggers: {}
       mappedFields: try JSON.parse(@data.dataset.checkoutInfo); catch e then false
       form: document.getElementById params[1]
-      instant: if (params[3]) is 'download' then true else false
-
+      instant: if (params[3]) is 'download' or 'eventInstant' then true else false
+      refresh: if (params[3]) is 'eventInstant' then true else false
 
 
     if EventEmitter? then @.events = new EventEmitter()
@@ -44,24 +44,29 @@ class Checkout
       # .bindAjax()
 
 
+  addLoading: (text) =>
+    @_properties.originalText = @_properties.target.innerText
+    @_properties.target.innerHTML = "#{text}...<span class='icon icon--loading'></span>"
+    core.addClass @_properties.target, 'btn--icon'
+      
   bindClick: =>
 
     checkout = (e) =>
 
       unless @_properties.instant
-        @_properties.originalText = @_properties.target.innerText
-        @_properties.target.innerHTML = 'Loading...<span class="icon icon--loading"></span>'
-        core.addClass @_properties.target, 'btn--icon'
-
+        @.addLoading("Loading")
 
       if @_properties.instant
 
         a = document.createElement("a")
-        if typeof a.download is "undefined"
+        if typeof a.download is "undefined" and @_properties.refresh is false 
           e.preventDefault()
           window.open(@_properties._id, '_blank')
+        if @_properties.refresh
+          @.addLoading("Processing")
+          
       else
-        e.preventDefault()
+        e.preventDefa2ult()
 
       @.clearCart()
 
@@ -84,17 +89,21 @@ class Checkout
       if @_properties.instant
         @.processInstant()
         @.loadModal(true)
+        
+        if @_properties.refresh
+          setTimeout (->
+            window.location.reload(true)
+            return
+          ), 500
+        
       else
         @.loadModal()
-
-
     )
 
 
   processInstant: =>
-
+  
     @.cleanInstant()
-
 
 
   cleanInstant: =>
@@ -103,8 +112,7 @@ class Checkout
     for item in core.flattenObject core['checkout']
       unless item._properties._id is @_properties._id
         delete core['checkout'][item._properties._id]
-
-
+      
 
   submitForm: =>
 
@@ -127,7 +135,7 @@ class Checkout
 
 
 
-  loadModal: ( hidden) =>
+  loadModal: ( hidden ) =>
 
     # First things first, lets destroy existing modal
     existingModal = document
@@ -166,13 +174,9 @@ class Checkout
       @_properties.target.originalText = ''
       core.removeClass @_properties.target, 'btn--icon'
 
-    unless @_properties.instant
+    unless @_properties.instant or @_properties.refresh
       delay = setTimeout removeLoading, 5000
-
-
-
-
-
+      
     this
 
   mapFields: =>
