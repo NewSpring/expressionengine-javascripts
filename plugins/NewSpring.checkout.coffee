@@ -31,13 +31,12 @@ class Checkout
       triggers: {}
       mappedFields: try JSON.parse(@data.dataset.checkoutInfo); catch e then false
       form: document.getElementById params[1]
-      instant: if (params[3]) is 'download' or 'eventInstant' then true else false
+      instant: if (params[3]) is ( 'download' or 'eventInstant' ) then true else false
       refresh: if (params[3]) is 'eventInstant' then true else false
 
 
     if EventEmitter? then @.events = new EventEmitter()
-
-
+    
     @
       .bindClick()
       .bindEvents()
@@ -66,7 +65,7 @@ class Checkout
           @.addLoading("Processing")
           
       else
-        e.preventDefa2ult()
+        e.preventDefault()
 
       @.clearCart()
 
@@ -158,8 +157,6 @@ class Checkout
         core.modal = {}
         tmpl = modalName
         core.modal[tmpl] = new Modal.model tmpl, 'data-modal-open', "preload"
-
-
 
     unless hidden
       core.modal[modalName].toggleModal()
