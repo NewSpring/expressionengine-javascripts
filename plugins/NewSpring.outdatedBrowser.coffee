@@ -51,8 +51,8 @@ class Outdated
   browserVersions: () =>
     
     if !!window.chrome && window.chrome.webstore
-      currentVersion = 'Chrome/48'
-      previousVersion = 'Chrome/47'
+      currentVersion = 'Chrome/49'
+      previousVersion = 'Chrome/48'
     else if typeof InstallTrigger != 'undefined'
       currentVersion = 'Firefox/44'
       previousVersion = 'Firefox/43'
