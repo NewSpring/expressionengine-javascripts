@@ -51,40 +51,32 @@ class Outdated
   browserVersions: () =>
     
     if !!window.chrome && window.chrome.webstore
-      currentVersion = 'Chrome/48'
-      previousVersion = 'Chrome/47'
+      minVersion = 47
     else if typeof InstallTrigger != 'undefined'
-      currentVersion = 'Firefox/44'
-      previousVersion = 'Firefox/43'
+      minVersion = 43
     else if Object::toString.call(window.HTMLElement).indexOf('Constructor') > 0
-      currentVersion = 'Version/9'
-      previousVersion = 'Version/8'
+      minVersion = 8
     else if (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
-      currentVersion = 'OPR/35'
-      previousVersion = 'OPR/34'
+      minVersion = 34
     else if !!window.CSS
-      currentVersion = 'Edge/13'
-      previousVersion = 'Edge/13'
+      minVersion = 13
     else if false or ! !document.documentMode
-      currentVersion = 'Trident/7'
-      previousVersion = 'Trident/7'
+      minVersion = 7
     
-    if currentVersion && previousVersion
-      @.checkOutdated(currentVersion, previousVersion)
+    if minVersion
+      @.checkOutdated(minVersion)
     
-  checkOutdated: (currentVersion, previousVersion) =>
-  
-    console.log currentVersion
-    console.log previousVersion
+  checkOutdated: (minVersion) =>
   
     if @_properties.browserVersion[2]
-      if @_properties.browserVersion[2]  != currentVersion
-        if @_properties.browserVersion[2] != previousVersion
-          @.showOutdated()
-    else if @_properties.browserVersion[0] != currentVersion
-      if @_properties.browserVersion[0] != previousVersion
+      browserVer = @_properties.browserVersion[2].split('/')
+      console.log 
+      if browserVer[1] < minVersion
         @.showOutdated()
     else
+      browserVer = @_properties.browserVersion[0].split('/')
+      if browserVer[1] < minVersion
+        @.showOutdated()
     
   showOutdated: () =>
   
