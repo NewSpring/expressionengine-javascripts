@@ -44,7 +44,7 @@ class Player
 				code: params[1]
 			params: try JSON.parse(params[2]); catch e then {}
 			scriptKeys:
-				ooyala: "//player.ooyala.com/v3/ZmJmNTVlNDk1NjcwYTVkMzAzODkyMjg0?tweaks=android-enable-hls"
+				ooyala: "//player.ooyala.com/v3/d2ac021eb96c49fdb5d58883c017773e?tweaks=android-enable-hls"
 		}
 
 		# Set defaults
