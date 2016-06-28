@@ -51,8 +51,8 @@ class BackgroundPlayer
       bg:
         element: @data
         klass: @data.className
+        opacity: @data.style.opacity
       videos: videos
-
 
     ###
 
@@ -276,7 +276,7 @@ class BackgroundPlayer
     @_properties.bg.element.style.bottom = "0"
     @_properties.bg.element.style.left = "0"
     @_properties.bg.element.style.right = "0"
-    @_properties.bg.element.style.opacity = "0.2"
+    @_properties.bg.element.style.opacity = @_properties.bg.opacity
 
     if core.isMobile() then @_properties.bg.element.style.width = "auto"
 
