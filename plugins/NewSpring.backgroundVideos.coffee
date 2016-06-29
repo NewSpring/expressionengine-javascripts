@@ -147,7 +147,7 @@ class BackgroundPlayer
 
     if core.isMobile()
       # Turned off for launch until panning is built
-      # @.determineDesiredPositioning('img').setUpImg()
+      @.determineDesiredPositioning('img').setUpImg()
     else
       @.determineDesiredPositioning('video').setUpVideo()
 
@@ -267,10 +267,12 @@ class BackgroundPlayer
     @_properties.bg.element.style.display = "block"
     @_properties.bg.element.style.position = "absolute"
     @_properties.bg.element.style.objectFit = "cover"
-    @_properties.bg.element.style.height = "auto"
+    # @_properties.bg.element.style.height = "auto"
 
     @_properties.bg.element.style.minWidth = "100%"
     @_properties.bg.element.style.minHeight = "100%"
+    @_properties.bg.element.style.width = "100%"
+    @_properties.bg.element.style.height = "100%"
     @_properties.bg.element.style.zIndex = "-5px"
     @_properties.bg.element.style.top = "0"
     @_properties.bg.element.style.bottom = "0"
@@ -304,6 +306,9 @@ class BackgroundPlayer
 
       # create img
       img = @.buildElement('img')
+
+      # hide image until ready for viewing
+      img.style.display = "none"
 
       ###
 
