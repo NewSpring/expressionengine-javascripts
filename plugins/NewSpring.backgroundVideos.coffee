@@ -273,7 +273,7 @@ class BackgroundPlayer
     @_properties.bg.element.style.minHeight = "100%"
     @_properties.bg.element.style.width = "100%"
     @_properties.bg.element.style.height = "100%"
-    @_properties.bg.element.style.zIndex = "-5px"
+    # @_properties.bg.element.style.zIndex = "-5px"
     @_properties.bg.element.style.top = "0"
     @_properties.bg.element.style.bottom = "0"
     @_properties.bg.element.style.left = "0"
@@ -566,22 +566,22 @@ class BackgroundPlayer
     parentWidth = @.getParentWidth()
 
     # Offset on x axis
-    switch @_properties.bg.xaxis
-      when "left"
-        @_properties.bg.element.style.marginLeft = 0
-      when "right"
-        @_properties.bg.element.style.marginLeft = "#{-( @_properties.bg.element.width - parentWidth) }px"
-      else
-        @_properties.bg.element.style.marginLeft = "#{-( (Math.abs(@_properties.bg.element.width - parentWidth) )/2 )}px"
+    # switch @_properties.bg.xaxis
+    #   when "left"
+    #     @_properties.bg.element.style.marginLeft = 0
+    #   when "right"
+    #     @_properties.bg.element.style.marginLeft = "#{-( @_properties.bg.element.width - parentWidth) }px"
+    #   else
+    #     @_properties.bg.element.style.marginLeft = "#{-( (Math.abs(@_properties.bg.element.width - parentWidth) )/2 )}px"
 
-    # Offset on y axis
-    switch @_properties.bg.yaxis
-      when "top"
-        @_properties.bg.element.style.marginTop = 0
-      when "bottom"
-        @_properties.bg.element.style.marginTop =  "#{ -( @_properties.bg.element.height - parentHeight) }px"
-      else
-        @_properties.bg.element.style.marginTop = "#{-( ( (@_properties.bg.element.height - parentHeight ) )/2 )}px"
+    # # Offset on y axis
+    # switch @_properties.bg.yaxis
+    #   when "top"
+    #     @_properties.bg.element.style.marginTop = 0
+    #   when "bottom"
+    #     @_properties.bg.element.style.marginTop =  "#{ -( @_properties.bg.element.height - parentHeight) }px"
+    #   else
+    #     @_properties.bg.element.style.marginTop = "#{-( ( (@_properties.bg.element.height - parentHeight ) )/2 )}px"
 
     this
 
