@@ -307,7 +307,7 @@ class BackgroundPlayer
       # create img
       img = @.buildElement('img')
 
-      # hide video until ready for viewing
+      # hide image until ready for viewing
       img.style.display = "none"
 
       ###
