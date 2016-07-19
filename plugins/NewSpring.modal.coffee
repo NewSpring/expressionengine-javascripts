@@ -46,6 +46,32 @@ class Modal
       @.bindOpen()
 
 
+  document.ontouchmove = (event) ->
+    isTouchMoveAllowed = true
+    target = event.target
+    console.log event.target
+    while target isnt null
+      if target.classList and target.classList.contains('modal--opened')
+        isTouchMoveAllowed = false
+        break
+      target = target.parentNode
+    if !isTouchMoveAllowed
+      document.querySelectorAll '.container', ->
+        event.preventDefault()
+    return
+
+
+  removeIOSRubberEffect: (element) =>
+    element.addEventListener 'touchstart', ->
+      top = element.scrollTop
+      totalScroll = element.scrollHeight
+      currentScroll = top + element.offsetHeight
+      if top == 0
+        element.scrollTop = 1
+      else if currentScroll == totalScroll
+        element.scrollTop = top - 1
+      return
+    return
 
 
   getModal: (show) =>
@@ -138,6 +164,7 @@ class Modal
 
     if @_properties.modal is `undefined`
       @.getModal(true)
+
     else
       @.toggleClasses @_properties.modal
 
@@ -160,6 +187,8 @@ class Modal
         unless @_properties.modal?
           @.getModal()
         @.toggleModal()
+
+        @.removeIOSRubberEffect(@_properties.modal)
 
       trigger.addEventListener('click', click, false)
 
