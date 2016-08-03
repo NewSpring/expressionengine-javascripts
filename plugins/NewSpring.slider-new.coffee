@@ -37,7 +37,7 @@ class SliderNew
       cardWidth = screenWidth * .333
       gutter = 20
     else if screenWidth >= 480
-      cardWidth = screenWidth * .45
+      cardWidth = screenWidth * .4
       gutter = 20
     else
       cardWidth = screenWidth * .75
