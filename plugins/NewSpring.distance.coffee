@@ -121,10 +121,10 @@ class Distance
 
       adjacentInput = trigger.previousElementSibling
 
-      if adjacentInput.tagName is "INPUT"
-        adjacentInput.addEventListener('keydown', enter, false)
-
-      trigger.addEventListener('click', click, false)
+      if trigger.tagName is "INPUT"
+        trigger.addEventListener('keydown', enter, false)
+      else
+        trigger.addEventListener('click', click, false)
 
     this
 
