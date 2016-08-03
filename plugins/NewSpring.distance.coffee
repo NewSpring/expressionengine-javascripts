@@ -188,6 +188,7 @@ class Distance
         destinationItem = {
           _id  : @_properties.locations[itemIndex].count
           distance : "#{destination.distance.value}"
+          miles : "#{destination.distance.text.replace(' mi','')}"
         }
 
         # # Inject that item in the campusList array
@@ -204,10 +205,37 @@ class Distance
 
     sortedDestinationArray = []
 
-    console.log 'sortMarkup'
-
     destinations.map((destination) =>
       targetDestination = document.querySelector("[data-destination-item='#{destination._id}']")
+
+      if destination.miles?
+
+        # Add push-quarter--bottom Class To H3
+        targetHeading = targetDestination.getElementsByTagName("H3")[0]
+
+        if targetHeading
+          core.addClass targetHeading,'push-quarter--bottom'
+
+        # Create Mileage Information Markup
+        milesText = document.createElement 'p'
+
+        # Add a data attribute so we can remove it the next time
+        milesText.setAttribute("data-distance-miles", "#{destination._id}")
+
+        milesMarkup = '<small><em>' + destination.miles + ' miles away' + '</em></small>'
+
+        # Find Existing Mileage Information
+        existingMiles = targetDestination.querySelector('[data-distance-miles]')
+
+        # Add mileage information beneath heading
+        # If there is existing mileage information, replace the innerHTML
+        if existingMiles
+          existingMiles.innerHTML = milesMarkup
+        # Else insert the created node
+        else if milesText
+          milesText.innerHTML = milesMarkup
+          targetHeading.parentNode.insertBefore milesText, targetHeading.nextSibling
+
       sortedDestinationArray.push targetDestination
     )
 
@@ -225,8 +253,6 @@ class Distance
         core.addClass element, 'card--selected'
       else
         core.removeClass element, 'card--selected'
-
-      console.log element
 
       destinationTarget.outerHTML = element.outerHTML
 
