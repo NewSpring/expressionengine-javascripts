@@ -174,7 +174,8 @@ class Distance
 
   destinationSort: (response) =>
 
-    if response.data?.geolocate?.rows?[0].elements?
+    # Check that we have a valid response with rows, and that the origin isn't blank
+    if response.data?.geolocate?.rows?[0].elements? and response.data.geolocate.origin_addresses[0] isnt ""
 
       destinationDistances = response.data.geolocate.rows[0].elements.slice()
 
