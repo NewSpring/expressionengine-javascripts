@@ -108,12 +108,21 @@ class Distance
 
     for trigger in @_properties.findLocation
 
+      enter = (e) =>
+        if e.keyCode is 13
+          click(e)
+
       click = (e) =>
         e.preventDefault()
 
         if @_properties.multi
           @.findClosest(trigger.previousElementSibling.value)
           @.scrollToList()
+
+      adjacentInput = trigger.previousElementSibling
+
+      if adjacentInput.tagName is "INPUT"
+        adjacentInput.addEventListener('keydown', enter, false)
 
       trigger.addEventListener('click', click, false)
 
