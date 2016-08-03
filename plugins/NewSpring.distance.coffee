@@ -130,7 +130,7 @@ class Distance
 
   scrollToList: () =>
 
-    document.querySelector('[data-distance-scroll]').scrollIntoView({block: "end", behavior: "smooth"})
+    document.querySelector('[' + @_properties.attr + '-scroll="' + @_properties._id + '"]').scrollIntoView({block: "end", behavior: "smooth"})
 
   createList: () =>
     compiledTemplate = Handlebars.getTemplate('locations_listitem')
@@ -202,14 +202,18 @@ class Distance
 
   sortMarkup: (destinations) =>
 
-    destinationItems = document.querySelectorAll('[data-destination-item]')
+
+    # need to find a way to wildcard the latter part of the string
+    destinationItems = document.querySelectorAll('[' + @_properties.attr + '-item^="' + @_properties._id + ',"]')
+
+    # document.querySelectorAll('[data-destination-item]')
 
     sortedDestinationArray = []
 
     destinations.map((destination) =>
-      targetDestination = document.querySelector("[data-destination-item='#{destination._id}']")
+      targetDestination = document.querySelector('[' + @_properties.attr + '-item="' + @_properties._id + ', ' + destination._id + '"]')
 
-      if destination.miles?
+      if destination.miles? and destinationItems isnt null
 
         # Add push-quarter--bottom Class To H3
         targetHeading = targetDestination.getElementsByTagName("H3")[0]
@@ -248,7 +252,9 @@ class Distance
 
     list.map((element) =>
 
-      destinationTarget = document.querySelectorAll("[data-destination-item]")[destinationIndex]
+      # OuterHTML is broken somewhere in here
+
+      destinationTarget = document.querySelector('[' + @_properties.attr + '-item="' + @_properties._id + ', ' + destinationIndex + '"]')
 
       if destinationIndex is 0
         core.addClass element, 'card--selected'
