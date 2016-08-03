@@ -21,43 +21,40 @@ class SliderNew
     # Bind to Window Resize
     window.addEventListener('resize', @.sliderSetup);
 
-  sliderSetup: =>
-  
-    # Get screen width
-    screenWidth = window.innerWidth
+  getRatio: (width) =>
 
-    # Get quantity of children elements
-    childCount = @data.childElementCount
+    if width < 480
+      return 0.8
 
-    # Create array of children elements
-    sliderItems = @data.getElementsByClassName('slider__item-new')
+    if width < 768
+      return 0.6
 
-    # Set element widths/gutters
-    if screenWidth >= 1024
-      cardWidth = screenWidth * .333
-      gutter = 20
-    else if screenWidth >= 480
-      cardWidth = screenWidth * .45
-      gutter = 20
-    else
-      cardWidth = screenWidth * .75
-      gutter = 16
+    if width < 1025
+      return 0.3
 
-    # Loop through children element array
-    for item in sliderItems
-      # Set card width
-      item.style.width = cardWidth + 'px';
-      # Set card gutter
-      item.style.marginRight = gutter + 'px';
+    return 0.2
 
-    # Calculate slider width
-    sliderWidth = (cardWidth + gutter) * childCount
+  dynamicWidthContainer: (count) =>
 
-    # Set slider width
-    @data.style.width = sliderWidth + 'px';
-    # Set slider left margin
-    @data.style.marginLeft = gutter + 'px';
+    if typeof window isnt "undefined" and window isnt null
+      itemSize = (window.innerWidth - 30) * @.getRatio(window.innerWidth)
+      itemSize = itemSize + 30
+      width = count * itemSize
 
+      @data.style.width = width + 'px'
+
+  dynamicWidth: (sliderItems) =>
+
+    if typeof window isnt "undefined" and window isnt null
+      itemSize = (window.innerWidth - 40) * @.getRatio(window.innerWidth)
+
+      for item in sliderItems
+        item.style.width = itemSize + 'px'
+
+  sliderSetup: () =>
+
+    @.dynamicWidthContainer(@data.childElementCount)
+    @.dynamicWidth(@data.getElementsByClassName('slider__item-new'))
 
 if jQuery and core?
   core.addPlugin('SliderNew', SliderNew, '[data-slider-new]' )
