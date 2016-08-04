@@ -65,7 +65,6 @@ class Distance
     # bind element and properties to private @_properties variable
     @_properties = {
       _id : params[0]
-      endpoint: "https://maps.googleapis.com/maps/api/distancematrix/json?"
       target: @data
       location: choosenLocations
       locations: locations
@@ -85,21 +84,6 @@ class Distance
 
   bindEvents: () =>
 
-    @.events.on('campus-found', (campus) =>
-
-      for trigger in @_properties.findLocation
-        core.removeClass trigger, 'btn--icon btn--filled'
-        trigger.innerHTML = trigger.dataset.originalText
-    )
-
-    @.events.on('finding-closest', () =>
-
-      for trigger in @_properties.findLocation
-        trigger.dataset.originalText = trigger.innerText
-        trigger.innerHTML = 'Loading...<span class="icon icon--loading"></span>'
-        core.addClass trigger, 'btn--icon btn--filled'
-    )
-
     # Add event listener to find the click.
 
     @_properties.findLocation = document.querySelectorAll(
@@ -117,20 +101,23 @@ class Distance
 
         if @_properties.multi
           @.findClosest(trigger.previousElementSibling.value)
-          @.scrollToList()
+          @.scrollToList(trigger)
 
       adjacentInput = trigger.previousElementSibling
 
       if trigger.tagName is "INPUT"
-        trigger.addEventListener('keydown', enter, false)
+        trigger.addEventListener('keydown', enter)
       else
-        trigger.addEventListener('click', click, false)
+        trigger.addEventListener('click', click)
 
     this
 
-  scrollToList: () =>
+  scrollToList: (trigger) =>
 
-    document.querySelector('[' + @_properties.attr + '-scroll="' + @_properties._id + '"]').scrollIntoView({block: "end", behavior: "smooth"})
+    if smoothScroll
+      smoothScroll.animateScroll(trigger, '[' + @_properties.attr + '-scroll="' + @_properties._id + '"]', {updateURL: false})
+    else
+      document.querySelector('[' + @_properties.attr + '-scroll="' + @_properties._id + '"]').scrollIntoView({block: "end", behavior: "smooth"})
 
   createList: () =>
     compiledTemplate = Handlebars.getTemplate('locations_listitem')
@@ -166,7 +153,7 @@ class Distance
     query = "query GeoLocate($origin:String, $destinations: String) { geolocate(origin: $origin, destinations: $destinations) { destination_addresses, origin_addresses, rows { elements { distance { text, value }, duration { text, value }, status } } } }";
 
     response = $.ajax({
-      url: 'https://alpha-api.newspring.cc/graphql?query=' + encodeURI(query),
+      url: 'https://api.newspring.cc/graphql?query=' + encodeURI(query),
       data: {variables:variables},
       dataType: 'json',
       success: @.destinationSort
@@ -256,21 +243,27 @@ class Distance
 
       destinationTarget = destinationList[destinationIndex]
 
+      # Set a marginClass var
       marginClass = ''
 
+      # Find the correct marginClass
       for item in destinationTarget.classList
 
         if item.startsWith('push-')
           marginClass = item
 
+      # Add marginClass to all elments
+      core.addClass element, marginClass
+
+      # Remove marginClass from the last element
+      if destinationIndex is destinationList.length - 1
+        core.removeClass element, marginClass
+
+      # Add card--selected to the first card
       if destinationIndex is 0
         core.addClass element, 'card--selected'
       else
         core.removeClass element, 'card--selected'
-        core.addClass element, marginClass
-
-      if destinationIndex is destinationList.length - 1
-        core.removeClass element, marginClass
 
       if destinationTarget isnt null
 
