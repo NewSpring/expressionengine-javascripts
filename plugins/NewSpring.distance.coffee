@@ -256,21 +256,27 @@ class Distance
 
       destinationTarget = destinationList[destinationIndex]
 
+      # Set a marginClass var
       marginClass = ''
 
+      # Find the correct marginClass
       for item in destinationTarget.classList
 
         if item.startsWith('push-')
           marginClass = item
 
+      # Add marginClass to all elments
+      core.addClass element, marginClass
+
+      # Remove marginClass from the last element
+      if destinationIndex is destinationList.length - 1
+        core.removeClass element, marginClass
+
+      # Add card--selected to the first card
       if destinationIndex is 0
         core.addClass element, 'card--selected'
       else
         core.removeClass element, 'card--selected'
-        core.addClass element, marginClass
-
-      if destinationIndex is destinationList.length - 1
-        core.removeClass element, marginClass
 
       if destinationTarget isnt null
 
