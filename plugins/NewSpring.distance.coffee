@@ -248,20 +248,26 @@ class Distance
 
   rebuildMarkup: (list) =>
 
+    destinationList = document.querySelectorAll('[' + @_properties.attr + '-item^="' + @_properties._id + ', "]')
+
     destinationIndex = 0
 
     list.map((element) =>
 
-      # OuterHTML is broken somewhere in here
-
-      destinationTarget = document.querySelector('[' + @_properties.attr + '-item="' + @_properties._id + ', ' + destinationIndex + '"]')
+      destinationTarget = destinationList[destinationIndex]
 
       if destinationIndex is 0
         core.addClass element, 'card--selected'
       else
         core.removeClass element, 'card--selected'
+        core.addClass element, 'push-half--right'
 
-      destinationTarget.outerHTML = element.outerHTML
+      if destinationIndex is destinationList.length - 1
+        core.removeClass element, 'push-half--right'
+
+      if destinationTarget isnt null
+
+        destinationTarget.outerHTML = element.outerHTML
 
       destinationIndex = destinationIndex + 1
     )
