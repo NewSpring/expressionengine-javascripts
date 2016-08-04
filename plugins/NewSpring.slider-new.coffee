@@ -56,15 +56,12 @@ class SliderNew
     itemMargin = parseInt(window.getComputedStyle(@_properties.children[0], null).getPropertyValue("margin-right").replace('px',''))
 
     width = count * (itemSize + itemMargin)
-    console.log width
 
     @_properties.target.style.width = width + 'px'
 
   dynamicWidth: (sliderItems) =>
     itemSize = Math.round((window.innerWidth) * @.getRatio(window.innerWidth))
     
-    console.log itemSize
-
     for item in sliderItems
       item.style.width = itemSize + 'px'
 
