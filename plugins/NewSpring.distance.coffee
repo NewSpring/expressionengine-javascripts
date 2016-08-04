@@ -256,14 +256,21 @@ class Distance
 
       destinationTarget = destinationList[destinationIndex]
 
+      marginClass = ''
+
+      for item in destinationTarget.classList
+
+        if item.startsWith('push-')
+          marginClass = item
+
       if destinationIndex is 0
         core.addClass element, 'card--selected'
       else
         core.removeClass element, 'card--selected'
-        core.addClass element, 'push-half--right'
+        core.addClass element, marginClass
 
       if destinationIndex is destinationList.length - 1
-        core.removeClass element, 'push-half--right'
+        core.removeClass element, marginClass
 
       if destinationTarget isnt null
 
