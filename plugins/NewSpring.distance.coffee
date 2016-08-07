@@ -153,11 +153,14 @@ class Distance
     query = "query GeoLocate($origin:String, $destinations: String) { geolocate(origin: $origin, destinations: $destinations) { destination_addresses, origin_addresses, rows { elements { distance { text, value }, duration { text, value }, status } } } }";
 
     response = $.ajax({
-      url: 'https://api.newspring.cc/graphql?query=' + encodeURI(query),
-      data: {variables:variables},
-      dataType: 'json',
+      type: "POST",
+      url: "https://api.newspring.cc/graphql",
+      data: {
+        query: query,
+        variables: variables
+      },
       success: @.destinationSort
-    });
+    })
 
   destinationSort: (response) =>
 
