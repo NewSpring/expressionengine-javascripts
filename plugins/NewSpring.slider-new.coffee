@@ -31,6 +31,7 @@ class SliderNew
       target : @data
       childElementCount : @data.childElementCount
       children : @data.children
+      attr : attr
 
     # Setup Slider
     @.sliderSetup()
@@ -47,28 +48,32 @@ class SliderNew
       return 0.6
 
     if width < 1025
-      return 0.3
+      return 0.43
+
+    if width < 1260
+      return 0.29
 
     return 0.2
 
-  dynamicWidthContainer: (count) =>
-    itemSize = Math.round((window.innerWidth) * @.getRatio(window.innerWidth))
+  dynamicWidthContainer: (count, containerWidth) =>
+    itemSize = Math.round((containerWidth) * @.getRatio(containerWidth))
     itemMargin = parseInt(window.getComputedStyle(@_properties.children[0], null).getPropertyValue("margin-right").replace('px',''))
 
-    width = count * (itemSize + itemMargin)
+    width = (count * (itemSize + itemMargin)) + itemMargin
 
     @_properties.target.style.width = width + 'px'
 
-  dynamicWidth: (sliderItems) =>
-    itemSize = Math.round((window.innerWidth) * @.getRatio(window.innerWidth))
+  dynamicWidth: (sliderItems, containerWidth) =>
+    itemSize = Math.round((containerWidth) * @.getRatio(containerWidth))
     
     for item in sliderItems
       item.style.width = itemSize + 'px'
 
   sliderSetup: () =>
     if typeof window isnt "undefined" and window isnt null
-      @.dynamicWidthContainer(@_properties.childElementCount)
-      @.dynamicWidth(@_properties.children)
+      containerWidth = document.querySelector('[' + @_properties.attr + '-width="' + @_properties._id + '"]').offsetWidth
+      @.dynamicWidthContainer(@_properties.childElementCount, containerWidth)
+      @.dynamicWidth(@_properties.children, containerWidth)
 
 if jQuery and core?
   core.addPlugin('SliderNew', SliderNew, '[data-slider-new]' )
