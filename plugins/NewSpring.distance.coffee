@@ -165,8 +165,6 @@ class Distance
 
   destinationSort: (response) =>
 
-    console.log response
-
     # Check that we have a valid response with rows, and that the origin isn't blank
     if response?.data?.geolocate?.rows?[0].elements? and response.data.geolocate.origin_addresses[0] isnt "" and response.data.geolocate.rows.length > 0
 
