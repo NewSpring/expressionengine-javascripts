@@ -38,7 +38,7 @@ class SliderNew
 
     # Bind to Window Resize
     window.addEventListener('resize', @.sliderSetup);
-
+    
   getRatio: (width) =>
 
     if width < 480
