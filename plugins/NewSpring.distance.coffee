@@ -1,5 +1,5 @@
 ###
-@class Googleapis, Geolocation
+@class Distance
 
 @author
   Edolyne Long
@@ -8,8 +8,9 @@
 @version 0.1
 
 @note
-  Googleapis required to initialize Google maps
-  Geolocation renders map view of data parameters
+  Heighliner integration required to sort distance items.
+  Distance requires a JSON object of destinations, and an origin address.
+  Distance then sorts existing items based on their distance from the origin.
 
 ###
 
