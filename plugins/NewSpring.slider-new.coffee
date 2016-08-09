@@ -14,50 +14,66 @@
 ###
 class SliderNew
   constructor: (@data, attr) ->
+    # Get data from attribute
+    params = @data.attributes[attr].value.split(',')
+
+    params = params.map (param) -> param.trim()
+
+    if params.length > 3
+      meta = params.splice(0, 2)
+      json = params.join(',')
+      params = meta.concat json
+
+
+    # Define properties
+    @_properties =
+      _id: params[0]
+      target : @data
+      childElementCount : @data.childElementCount
+      children : @data.children
+      attr : attr
 
     # Setup Slider
     @.sliderSetup()
 
     # Bind to Window Resize
     window.addEventListener('resize', @.sliderSetup);
+    
+  getRatio: (width) =>
 
-  sliderSetup: =>
-  
-    # Get screen width
-    screenWidth = window.innerWidth
+    if width < 480
+      return 0.8
 
-    # Get quantity of children elements
-    childCount = @data.childElementCount
+    if width < 768
+      return 0.6
 
-    # Create array of children elements
-    sliderItems = @data.getElementsByClassName('slider__item-new')
+    if width < 1025
+      return 0.43
 
-    # Set element widths/gutters
-    if screenWidth >= 1024
-      cardWidth = screenWidth * .333
-      gutter = 20
-    else if screenWidth >= 480
-      cardWidth = screenWidth * .4
-      gutter = 20
-    else
-      cardWidth = screenWidth * .75
-      gutter = 16
+    if width < 1260
+      return 0.29
 
-    # Loop through children element array
+    return 0.2
+
+  dynamicWidthContainer: (count, containerWidth) =>
+    itemSize = Math.round((containerWidth) * @.getRatio(containerWidth))
+    itemMargin = parseInt(window.getComputedStyle(@_properties.children[0], null).getPropertyValue("margin-right").replace('px',''))
+
+    width = (count * (itemSize + itemMargin)) + itemMargin
+
+    @_properties.target.style.width = width + 'px'
+
+  dynamicWidth: (sliderItems, containerWidth) =>
+    itemSize = Math.round((containerWidth) * @.getRatio(containerWidth))
+    
     for item in sliderItems
-      # Set card width
-      item.style.width = cardWidth + 'px';
-      # Set card gutter
-      item.style.marginRight = gutter + 'px';
+      item.style.width = itemSize + 'px'
 
-    # Calculate slider width
-    sliderWidth = (cardWidth + gutter) * childCount
-
-    # Set slider width
-    @data.style.width = sliderWidth + 'px';
-    # Set slider left margin
-    @data.style.marginLeft = gutter + 'px';
-
+  sliderSetup: () =>
+    if typeof window isnt "undefined" and window isnt null
+      containerWidth = document.querySelector('[' + @_properties.attr + '-width="' + @_properties._id + '"]').offsetWidth
+      @.dynamicWidthContainer(@_properties.childElementCount, containerWidth)
+      @.dynamicWidth(@_properties.children, containerWidth)
 
 if jQuery and core?
   core.addPlugin('SliderNew', SliderNew, '[data-slider-new]' )
