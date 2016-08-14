@@ -34,7 +34,7 @@ class userAgent
 
     # Check for bot
     # List was found at: https://perishablepress.com/list-all-user-agents-top-search-engines/
-    if /aolbuild|baidu|bingbot|bingpreview|duckduckgo|adsgot-google,mediapertners-google|googlebot|teoma|slurp|yahoo! Slurp|yandex|msnbot/i.test(navigator.userAgent)
+    if /RogerBot|aolbuild|baidu|bingbot|bingpreview|duckduckgo|adsgot-google,mediapertners-google|googlebot|teoma|slurp|yahoo! Slurp|yandex|msnbot/i.test(navigator.userAgent)
       @.removeSection()
 
   removeSection: =>
