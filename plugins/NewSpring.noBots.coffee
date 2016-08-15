@@ -30,6 +30,7 @@ class noBots
     @_properties = {
       _id: params[0]
       target : @data
+      body : document.getElementsByTagName('body')[0]
     }
 
     # Check for bot
@@ -44,4 +45,4 @@ class noBots
     @_properties.target.outerHTML = ""
 
 if core?
-  core.addPlugin('userAgent', userAgent, '[data-no-bots]')
+  core.addPlugin('noBots', noBots, '[data-no-bots]')
