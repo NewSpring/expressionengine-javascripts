@@ -12,6 +12,7 @@
     iOS
     Android
     Kindle
+    Anchored
 ###
 
 class userAgent
@@ -34,11 +35,14 @@ class userAgent
       _id: params[0]
       target : @data
       targetDevice : params[1]
+      userAgentLinks : document.querySelectorAll('[data-user-agent]')
     }
 
     # Check for mobile
     if /Mobile|Android|Silk/i.test(navigator.userAgent)
       @.setDevice()
+    else
+      @.setAnchored()
 
   setDevice: =>
 
@@ -51,10 +55,30 @@ class userAgent
       currentDevice = 'android'
 
     if currentDevice is @_properties.targetDevice
-      core.removeClass @_properties.target, "visuallyhidden"
+      core.removeClass @_properties.target, 'visuallyhidden'
 
     else if currentDevice isnt @_properties.targetDevice
-      core.addClass @_properties.target, "visuallyhidden"
+      core.addClass @_properties.target, 'visuallyhidden'
+
+  setAnchored: =>
+
+    # Make sure that the link is set for anchored
+    if @_properties.targetDevice is 'anchored'
+
+      console.log @_properties
+
+      userAgentLinks = document.querySelectorAll('[data-user-agent]')
+
+      for link in @_properties.userAgentLinks
+
+        userAgent = link.dataset.userAgent.split(',')
+
+        if userAgent.length > 1
+
+          targetDevice = userAgent[1].trim()
+
+          unless targetDevice is 'anchored'
+            core.addClass link, 'visuallyhidden'
 
 if core?
   core.addPlugin('userAgent', userAgent, '[data-user-agent]')
