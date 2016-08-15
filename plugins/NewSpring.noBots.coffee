@@ -11,7 +11,7 @@
   Abolish the bots from parts that we don't want crawled
 ###
 
-class userAgent
+class noBots
   realSelf = this
   constructor: (@data, attr) ->
 
@@ -34,7 +34,9 @@ class userAgent
 
     # Check for bot
     # List was found at: https://perishablepress.com/list-all-user-agents-top-search-engines/
-    if /RogerBot|aolbuild|baidu|bingbot|bingpreview|duckduckgo|adsgot-google,mediapertners-google|googlebot|teoma|slurp|yahoo! Slurp|yandex|msnbot/i.test(navigator.userAgent)
+    # RogerBot added to be able to test in SeoMoz tools
+
+    if /RogerBot|aolbuild|baidu|bingbot|bingpreview|duckduckgo|adsgot-google,mediapertners-google|googlebot|teoma|slurp|yahoo! Slurp|yandex|msnbot|facebookexternalhit|twitterbot/i.test(navigator.userAgent)
       @.removeSection()
 
   removeSection: =>
