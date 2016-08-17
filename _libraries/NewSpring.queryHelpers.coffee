@@ -26,6 +26,7 @@ class queryHelpers
 
     @_properties =
       data: data
+      scroll: "data-scroll"
 
     @['plugins'] = {}
 
@@ -36,14 +37,14 @@ class queryHelpers
       .scrollToList()
 
     # Scroll to location query string
-    if core.doesQueryVariableExist "data-scroll"
-      @.scrollToList()
+    if core.doesQueryVariableExist @_properties.scroll
+      @.scrollToList(@_properties.scroll)
 
-  scrollToList: ->
+  scrollToList: (queryString) ->
 
-    if core.doesQueryVariableExist "data-scroll"
+    if queryString
       # Returns Array of Strings
-      queryValue = core.getQueryVariable "data-scroll"
+      queryValue = core.getQueryVariable queryString
       # Get the first value of the array and split by the '='
       queryValue = queryValue[0].split('=')
       # Get the value after the split, and make sure there is no whitespace
