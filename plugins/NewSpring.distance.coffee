@@ -80,7 +80,8 @@ class Distance
 
     if core.doesQueryVariableExist @_properties.attr
       queryString = core.getQueryVariable @_properties.attr
-      @.findClosest(queryString[0].split('=')[1])
+      distanceValue = unescape(queryString[0].split('=')[1])
+      @.findClosest(distanceValue)
 
     @.bindEvents()
 
