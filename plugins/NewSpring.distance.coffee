@@ -73,12 +73,14 @@ class Distance
       attr: attr
     }
 
-
     if @_properties.location[0] is 'all' or @_properties.location.length > 1
       @_properties.multi = true
 
-
     if EventEmitter? then @.events = new EventEmitter()
+
+    if core.doesQueryVariableExist @_properties.attr
+      queryString = core.getQueryVariable @_properties.attr
+      @.findClosest(queryString[0].split('=')[1])
 
     @.bindEvents()
 
@@ -116,7 +118,7 @@ class Distance
   scrollToList: (trigger) =>
 
     if smoothScroll
-      smoothScroll.animateScroll(trigger, '[' + @_properties.attr + '-scroll="' + @_properties._id + '"]', {updateURL: false})
+      smoothScroll.animateScroll(trigger, "##{@_properties._id}", {updateURL: false})
     else
       document.querySelector('[' + @_properties.attr + '-scroll="' + @_properties._id + '"]').scrollIntoView({block: "end", behavior: "smooth"})
 
