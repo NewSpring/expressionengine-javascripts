@@ -8,7 +8,8 @@
 @version 0.1
 
 @note
-  Abolish the bots from parts that we don't want crawled
+  Abolish the bots from parts that we don't want crawled.
+  Important: The items relocated will be displayed in reverse order.
 ###
 
 class relocateObject
@@ -46,10 +47,7 @@ class relocateObject
 
     relocatePoint = document.querySelectorAll("#{@_properties.relocateTo}")[0]
 
-    if document.querySelectorAll('[' + @_properties.attr + ']').length > 1
-      relocatePoint.insertBefore(@_properties.target, relocatePoint.childNodes[@_properties._id])
-    else
-      relocatePoint.insertBefore(@_properties.target, relocatePoint.firstChild)
+    relocatePoint.insertBefore(@_properties.target, relocatePoint.firstChild)
 
 
 if core?
