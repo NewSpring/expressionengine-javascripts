@@ -41,18 +41,19 @@ class queryHelpers
 
   scrollToList: ->
 
-    # Returns Array of Strings
-    queryValue = core.getQueryVariable "data-scroll"
-    # Get the first value of the array and split by the '='
-    queryValue = queryValue[0].split('=')
-    # Get the value after the split, and make sure there is no whitespace
-    queryValue = queryValue[1].trim()
+    if core.doesQueryVariableExist "data-scroll"
+      # Returns Array of Strings
+      queryValue = core.getQueryVariable "data-scroll"
+      # Get the first value of the array and split by the '='
+      queryValue = queryValue[0].split('=')
+      # Get the value after the split, and make sure there is no whitespace
+      queryValue = queryValue[1].trim()
 
-    trigger = document.querySelector('body')
+      trigger = document.querySelector('body')
 
-    if smoothScroll
-      smoothScroll.animateScroll(trigger, "##{queryValue}", {updateURL: false})
-    else
-      document.querySelector("##{queryValue}").scrollIntoView({block: "start", behavior: "smooth"})
+      if smoothScroll
+        smoothScroll.animateScroll(trigger, "##{queryValue}", {updateURL: false})
+      else
+        document.querySelector("##{queryValue}").scrollIntoView({block: "start", behavior: "smooth"})
 
 window.query = new queryHelpers
