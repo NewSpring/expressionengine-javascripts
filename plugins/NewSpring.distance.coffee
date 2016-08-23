@@ -144,7 +144,7 @@ class Distance
 
     if @_properties?.locations?
       @_properties.locations.map((x) =>
-        "#{x.location.street1} #{x.location.city}, #{x.location.state} #{x.location.zip}"
+        "#{x.lat},#{x.lng}"
       ).join("|")
 
   calculateDistance: (location) =>
