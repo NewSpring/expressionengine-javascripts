@@ -58,7 +58,7 @@ class Share
 
   dmd: (event) =>
     @_properties.dmdy = event.pageY
-    if @_properties.dmdy isnt @_properties.mdy and event.target.parentNode.dataset.shareButton is undefined
+    if @_properties.dmdy isnt @_properties.mdy and event.target.parentNode.dataset?.shareButton is undefined
       el = document.getElementById("share")
       core.removeClass el, "share-menu-active"
 
@@ -87,7 +87,7 @@ class Share
       core.addClass el, "share-menu-active"
       @_properties.text = text
 
-      if event.target.parentNode.dataset.shareButton is undefined
+      if event.target.parentNode.dataset?.shareButton is undefined
 
         if (@_properties.mdy isnt event.pageY and @_properties.dmdy isnt event.pageY) or (@_properties.mdx isnt event.pageX)
 
