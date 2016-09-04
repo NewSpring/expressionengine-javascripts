@@ -255,7 +255,9 @@
 
 		// When a toggle is clicked, run the click handler
 		forEach(toggles, function (toggle) {
-			toggle.addEventListener('click', exports.animateScroll.bind( null, toggle, toggle.hash, settings ), false);
+			if (toggle.href.includes('#') || ( toggle.dataset.scroll && document.querySelector(toggle.dataset.scroll))) {
+				toggle.addEventListener('click', exports.animateScroll.bind( null, toggle, toggle.hash, settings ), false);
+			}
 		});
 
 	};
