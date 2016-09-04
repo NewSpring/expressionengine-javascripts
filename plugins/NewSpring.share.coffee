@@ -44,9 +44,10 @@ class Share
 
     if EventEmitter? then @.events = new EventEmitter()
 
-    if document.getSelection().getRangeAt
+    if typeof document.getSelection().getRangeAt is "function"
       @.showMenu()
       @.bindWatch().bindClick()
+
 
 
   bindWatch: =>
@@ -59,7 +60,7 @@ class Share
 
   dmd: (event) =>
     @_properties.dmdy = event.pageY
-    if @_properties.dmdy isnt @_properties.mdy and event.target.parentNode.dataset?.shareButton is undefined
+    if @_properties.dmdy isnt @_properties.mdy and event.target.parentNode?.dataset?.shareButton is undefined
       el = document.getElementById("share")
       core.removeClass el, "share-menu-active"
 
@@ -88,7 +89,7 @@ class Share
       core.addClass el, "share-menu-active"
       @_properties.text = text
 
-      if event.target.parentNode.dataset?.shareButton is undefined
+      if event.target.parentNode?.dataset?.shareButton is undefined
 
         if (@_properties.mdy isnt event.pageY and @_properties.dmdy isnt event.pageY) or (@_properties.mdx isnt event.pageX)
 
@@ -165,9 +166,9 @@ class Share
       hashtagCount: hashtagCount
       emailSubject: encodeURIComponent(@_properties.subject.trim())
 
-    if event.target.parentNode.id is "twitter-share-button"
+    if event.target.parentNode?.id is "twitter-share-button"
       @.tweet(shareData)
-    else if event.target.parentNode.id is "email-share-button"
+    else if event.target.parentNode?.id is "email-share-button"
       @.email(shareData)
     else console.log 'facebook can go here'
 
