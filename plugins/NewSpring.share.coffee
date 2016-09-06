@@ -44,7 +44,7 @@ class Share
 
     if EventEmitter? then @.events = new EventEmitter()
 
-    if typeof document.getSelection().getRangeAt is "function"
+    if typeof document.getSelection is "function" and typeof document.getSelection().getRangeAt is "function"
       @.showMenu()
       @.bindWatch().bindClick()
 
