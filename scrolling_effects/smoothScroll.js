@@ -108,6 +108,9 @@
 	 */
 	var getEndLocation = function ( anchor, headerHeight, offset ) {
 		var location = 0;
+		if(!anchor){
+			return -1;
+		}
 		if (anchor.offsetParent) {
 			do {
 				location += anchor.offsetTop;
@@ -180,6 +183,11 @@
 		var documentHeight = getDocumentHeight();
 		var timeLapsed = 0;
 		var percentage, position;
+
+		//don't animate scroll if end position is negative 
+		if (endLocation < 0) {
+			return;
+		}
 
 		// Prevent default click event
 		if ( toggle && toggle.tagName.toLowerCase() === 'a' && event ) {
