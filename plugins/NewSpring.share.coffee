@@ -73,18 +73,19 @@ class Share
 
     selection = document.getSelection()
     text = selection.toString()
-    range = selection.getRangeAt(0).cloneRange()
-    boundary = range.getBoundingClientRect()
-    if range.getClientRects
-      range.collapse(true)
-      rec = range.getClientRects()[0];
-      y = rec.top;
-      top = document.body.scrollTop + y
-
-
-    rect = range.getClientRects()[0]
     el = document.getElementById("share")
+    
     unless text is ""
+    
+      range = selection.getRangeAt(0).cloneRange()
+      boundary = range.getBoundingClientRect()
+      if range.getClientRects
+        range.collapse(true)
+        rec = range.getClientRects()[0];      
+        y = rec.top;
+        top = document.body.scrollTop + y
+
+      rect = range.getClientRects()[0]
 
       core.addClass el, "share-menu-active"
       @_properties.text = text
