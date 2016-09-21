@@ -58,6 +58,8 @@ class Outdated
       minVersion = 8
     else if (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
       minVersion = 34
+    else if !!window.safari || navigator.userAgent.indexOf(' Safari/') >= 0
+      minVersion = 9
     else if !!window.CSS
       minVersion = 13
     else if false or ! !document.documentMode
