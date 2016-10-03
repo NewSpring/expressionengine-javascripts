@@ -47,6 +47,11 @@ class AjaxSearch
       json = params.join(',')
       params = meta.concat json
 
+    if document.domain.split('.').length > 2
+      domain = document.domain.split('.')[1]
+    else
+      domain = document.domain.split('.')[0]
+
 
     autocompleteData =
       try
@@ -63,6 +68,7 @@ class AjaxSearch
       autocomplete: autocompleteData
       triggers: {}
       query: {}
+      site: domain
       config: config
       response:
         target:
@@ -477,6 +483,10 @@ class AjaxSearch
 
   search: =>
 
+    variables = { term: @_properties.query, first: 10, after: 0, site: @_properties.site }
+
+    query = "query Search($term: String!, $first: Int, $after: Int, $site: String) { search(query: $term, first: $first, after: $after, site: $site) { total, items { id, title, htmlTitle, htmlDescription, link, image, displayLink, description, type, section } } }"
+
     url = core.flattenObject @_properties.config[@_properties.type]
 
     queries = core.flattenObject @_properties.query
@@ -501,15 +511,30 @@ class AjaxSearch
 
     url = url.join('&') + '&q=' + queries
 
-    ajax = new XMLHttpRequest()
-    ajax.onreadystatechange = =>
-      return  if ajax.readyState isnt 4 or ajax.status isnt 200
-      @.events.emit 'result', JSON.parse(ajax.response)
-    ajax.open "GET", url, true
-    ajax.send()
+    response = $.ajax({
+      type: "POST",
+      url: "https://alpha-api.newspring.cc/graphql",
+      data: {
+        query: query,
+        variables: variables
+      },
+    }).done(
+      # @.destinationSort
+      # @.events.emit 'result'
+      @.results
+    )
+
+    # ajax = new XMLHttpRequest()
+    # ajax.onreadystatechange = =>
+      # return  if ajax.readyState isnt 4 or ajax.status isnt 200
+      # @.events.emit 'result', JSON.parse(ajax.response)
+    # ajax.open "GET", url, true
+    # ajax.send()
     @.events.emit 'searching'
 
-
+  results: (response) =>
+    if response?.data?.search?
+      @.events.emit 'result', response.data.search
 
   validate: (result) =>
 
@@ -518,6 +543,8 @@ class AjaxSearch
 
     # Reset data from search
     @_properties.response.data = result
+
+    console.log @_properties.response.data.items[0]
 
     @.events.emit('results-prep', result)
 
@@ -552,6 +579,9 @@ class GoogleSearch extends AjaxSearch
   constructor: (@data, attr) ->
     config =
       _id: 'google'
+      # heighliner:
+      #   variables: { term: @_properties.query, first: 10, after: 0, site: @_properties.site }
+      #   query: "query Search($term: String!, $first: Int, $after: Int, $site: String) { search(query: $term, first: $first, after: $after, site: $site) { total, items { id, title, htmlTitle, htmlDescription, link, image, displayLink, description, type, section } } }"
       google:
         baseUrl: "/?ACT=191"
     super @data, attr, config
@@ -581,7 +611,8 @@ class GoogleSearch extends AjaxSearch
           @.events.emit 'search', @_properties.query._search
       this
 
-    if result[0].pagination.previousPage then bindPrevious()
+    # Need To get this working again
+    # if result[0].pagination.previousPage then bindPrevious()
 
 
 
@@ -597,7 +628,8 @@ class GoogleSearch extends AjaxSearch
 
       this
 
-    if result[0].pagination.nextPage then bindNext()
+    # Need to get this working again
+    # if result[0].pagination.nextPage then bindNext()
 
 
 
