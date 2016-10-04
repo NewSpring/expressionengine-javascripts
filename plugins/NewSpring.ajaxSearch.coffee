@@ -121,6 +121,19 @@ class AjaxSearch
     @.events.emit('search-ready')
 
 
+  scrollToTop: =>
+
+    # Need to scroll to top of absolutly positioned element
+
+    targetHTML = document.getElementsByTagName("html")[0]
+
+    # Remove the modal--opened class so that the document will listen to the scroll event
+    core.removeClass targetHTML, "modal--opened"
+
+    document.querySelector('[data-modal-close="' + @_properties._id + '"]').scrollIntoView({block: "end", behavior: "smooth"})
+
+    # Add the modal--opened class back to restore intended functionality
+    core.addClass targetHTML, "modal--opened"
 
   ###
 
@@ -527,7 +540,6 @@ class AjaxSearch
 
   results: (response) =>
     if response?.data?.search?
-      console.log response.data.search.items[0].title
       @.events.emit 'result', response.data.search
 
   validate: (result) =>
@@ -606,6 +618,7 @@ class GoogleSearch extends AjaxSearch
           @_properties.paginationOffsetBy = result.previous - 1
 
           @.events.emit 'search', @_properties.query._search
+          @.scrollToTop()
       this
 
     if result.previous > 0 then bindPrevious()
@@ -621,6 +634,7 @@ class GoogleSearch extends AjaxSearch
           @_properties.paginationOffsetBy = result.next - 1
 
           @.events.emit 'search', @_properties.query._search
+          @.scrollToTop()
 
       this
 
