@@ -520,17 +520,9 @@ class AjaxSearch
         variables: variables
       },
     }).done(
-      # @.destinationSort
-      # @.events.emit 'result'
       @.results
     )
 
-    # ajax = new XMLHttpRequest()
-    # ajax.onreadystatechange = =>
-      # return  if ajax.readyState isnt 4 or ajax.status isnt 200
-      # @.events.emit 'result', JSON.parse(ajax.response)
-    # ajax.open "GET", url, true
-    # ajax.send()
     @.events.emit 'searching'
 
   results: (response) =>
