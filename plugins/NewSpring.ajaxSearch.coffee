@@ -70,6 +70,8 @@ class AjaxSearch
       query: {}
       site: domain
       config: config
+      paginationIncrement: 6
+      paginationOffsetBy: 0
       response:
         target:
           document
@@ -327,6 +329,7 @@ class AjaxSearch
   bindKeyup: =>
 
     @_properties.target.addEventListener( 'keyup', (event) =>
+
       input = @_properties.target
 
       # Not searching
@@ -343,7 +346,7 @@ class AjaxSearch
       # , @_properties.params.delay || 750
 
       if event.keyCode is 13
-        @.events.emit('search', input.value)
+        @.events.emit 'search', input.value
 
     , false)
 
@@ -364,8 +367,6 @@ class AjaxSearch
       setTimeout =>
         @.events.emit('extend-open')
       , 0
-
-
 
     )
 
@@ -483,9 +484,9 @@ class AjaxSearch
 
   search: =>
 
-    variables = { term: @_properties.query, first: 10, after: 0, site: @_properties.site }
+    variables = { term: "'#{ @_properties.query._search }'", first: @_properties.paginationIncrement, after: @_properties.paginationOffsetBy, site: "'#{ @_properties.site }'" }
 
-    query = "query Search($term: String!, $first: Int, $after: Int, $site: String) { search(query: $term, first: $first, after: $after, site: $site) { total, items { id, title, htmlTitle, htmlDescription, link, image, displayLink, description, type, section } } }"
+    query = "query Search($term: String!, $first: Int, $after: Int, $site: String) { search(query: $term, first: $first, after: $after, site: $site) { total, next, previous, items { id, title, htmlTitle, htmlDescription, link, image, displayLink, description, type, section } } }"
 
     url = core.flattenObject @_properties.config[@_properties.type]
 
@@ -513,7 +514,7 @@ class AjaxSearch
 
     response = $.ajax({
       type: "POST",
-      url: "https://alpha-api.newspring.cc/graphql",
+      url: "https://api.newspring.cc/graphql",
       data: {
         query: query,
         variables: variables
@@ -534,6 +535,7 @@ class AjaxSearch
 
   results: (response) =>
     if response?.data?.search?
+      console.log response.data.search.items[0].title
       @.events.emit 'result', response.data.search
 
   validate: (result) =>
@@ -544,17 +546,27 @@ class AjaxSearch
     # Reset data from search
     @_properties.response.data = result
 
-    console.log @_properties.response.data.items[0]
-
     @.events.emit('results-prep', result)
-
-
 
   prepResults: (results) =>
 
+    # Cleaning up our JSON Data for Handlebars
+
+    if results.total < 1
+      results.total = false
+
+    if results.next < 1
+      results.next = false
+
+    if results.previous < 1
+      results.previous = false
+
+    if results.next or results.previous
+      results.pagination = true
+
+    results.query = @_properties.query._search
+
     @.events.emit('results-ready', results)
-
-
 
   showPage: (result) =>
 
@@ -566,22 +578,15 @@ class AjaxSearch
 
     @.events.emit('results-rendered', result)
 
-
-
   extend: =>
     this
     # Easy way for object extenders to gain a constructor
-
-
 
 class GoogleSearch extends AjaxSearch
 
   constructor: (@data, attr) ->
     config =
       _id: 'google'
-      # heighliner:
-      #   variables: { term: @_properties.query, first: 10, after: 0, site: @_properties.site }
-      #   query: "query Search($term: String!, $first: Int, $after: Int, $site: String) { search(query: $term, first: $first, after: $after, site: $site) { total, items { id, title, htmlTitle, htmlDescription, link, image, displayLink, description, type, section } } }"
       google:
         baseUrl: "/?ACT=191"
     super @data, attr, config
@@ -606,13 +611,12 @@ class GoogleSearch extends AjaxSearch
       if target?
         target.onclick = (e) =>
 
-          @_properties.query.start = "start="+result[0].pagination.previousPage[0].startIndex
+          @_properties.paginationOffsetBy = result.previous - 1
 
           @.events.emit 'search', @_properties.query._search
       this
 
-    # Need To get this working again
-    # if result[0].pagination.previousPage then bindPrevious()
+    if result.previous > 0 then bindPrevious()
 
 
 
@@ -622,14 +626,14 @@ class GoogleSearch extends AjaxSearch
       if target?
         target.onclick = (e) =>
 
-          @_properties.query.start = "start="+result[0].pagination.nextPage[0].startIndex
+          @_properties.paginationOffsetBy = result.next - 1
 
           @.events.emit 'search', @_properties.query._search
 
       this
 
     # Need to get this working again
-    # if result[0].pagination.nextPage then bindNext()
+    if result.next > 0 then bindNext()
 
 
 
