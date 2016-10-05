@@ -72,6 +72,11 @@ class AjaxSearch
       config: config
       paginationIncrement: 6
       paginationOffsetBy: 0
+      scrollConfig:
+        anchor: '#' + params[0]
+        options:
+          speed: 1000,
+          easing: 'easeInOut'
       response:
         target:
           document
@@ -121,7 +126,7 @@ class AjaxSearch
     @.events.emit('search-ready')
 
 
-  scrollToTop: =>
+  scrollToTop: (toggle) =>
 
     # Need to scroll to top of absolutly positioned element
 
@@ -493,6 +498,7 @@ class AjaxSearch
     if window.history?
       history.pushState('', '', urlString)
 
+    @.scrollToTop()
 
 
   search: =>
@@ -618,7 +624,7 @@ class GoogleSearch extends AjaxSearch
           @_properties.paginationOffsetBy = result.previous - 1
 
           @.events.emit 'search', @_properties.query._search
-          @.scrollToTop()
+
       this
 
     if result.previous > 0 then bindPrevious()
@@ -634,7 +640,6 @@ class GoogleSearch extends AjaxSearch
           @_properties.paginationOffsetBy = result.next - 1
 
           @.events.emit 'search', @_properties.query._search
-          @.scrollToTop()
 
       this
 
