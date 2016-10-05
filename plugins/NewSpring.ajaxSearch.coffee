@@ -47,6 +47,11 @@ class AjaxSearch
       json = params.join(',')
       params = meta.concat json
 
+    if document.domain.split('.').length > 2
+      domain = document.domain.split('.')[1]
+    else
+      domain = document.domain.split('.')[0]
+
 
     autocompleteData =
       try
@@ -63,7 +68,15 @@ class AjaxSearch
       autocomplete: autocompleteData
       triggers: {}
       query: {}
+      site: domain
       config: config
+      paginationIncrement: 6
+      paginationOffsetBy: 0
+      scrollConfig:
+        anchor: '#' + params[0]
+        options:
+          speed: 1000,
+          easing: 'easeInOut'
       response:
         target:
           document
@@ -113,6 +126,19 @@ class AjaxSearch
     @.events.emit('search-ready')
 
 
+  scrollToTop: (toggle) =>
+
+    # Need to scroll to top of absolutly positioned element
+
+    targetHTML = document.getElementsByTagName("html")[0]
+
+    # Remove the modal--opened class so that the document will listen to the scroll event
+    core.removeClass targetHTML, "modal--opened"
+
+    document.querySelector('[data-modal-close="' + @_properties._id + '"]').scrollIntoView({block: "end", behavior: "smooth"})
+
+    # Add the modal--opened class back to restore intended functionality
+    core.addClass targetHTML, "modal--opened"
 
   ###
 
@@ -321,6 +347,7 @@ class AjaxSearch
   bindKeyup: =>
 
     @_properties.target.addEventListener( 'keyup', (event) =>
+
       input = @_properties.target
 
       # Not searching
@@ -337,7 +364,7 @@ class AjaxSearch
       # , @_properties.params.delay || 750
 
       if event.keyCode is 13
-        @.events.emit('search', input.value)
+        @.events.emit 'search', input.value
 
     , false)
 
@@ -358,8 +385,6 @@ class AjaxSearch
       setTimeout =>
         @.events.emit('extend-open')
       , 0
-
-
 
     )
 
@@ -473,9 +498,14 @@ class AjaxSearch
     if window.history?
       history.pushState('', '', urlString)
 
+    @.scrollToTop()
 
 
   search: =>
+
+    variables = { term: "'#{ @_properties.query._search }'", first: @_properties.paginationIncrement, after: @_properties.paginationOffsetBy, site: "'#{ @_properties.site }'" }
+
+    query = "query Search($term: String!, $first: Int, $after: Int, $site: String) { search(query: $term, first: $first, after: $after, site: $site) { total, next, previous, items { id, title, htmlTitle, htmlDescription, link, image, displayLink, description, type, section } } }"
 
     url = core.flattenObject @_properties.config[@_properties.type]
 
@@ -501,15 +531,22 @@ class AjaxSearch
 
     url = url.join('&') + '&q=' + queries
 
-    ajax = new XMLHttpRequest()
-    ajax.onreadystatechange = =>
-      return  if ajax.readyState isnt 4 or ajax.status isnt 200
-      @.events.emit 'result', JSON.parse(ajax.response)
-    ajax.open "GET", url, true
-    ajax.send()
+    response = $.ajax({
+      type: "POST",
+      url: "https://api.newspring.cc/graphql",
+      data: {
+        query: query,
+        variables: variables
+      },
+    }).done(
+      @.results
+    )
+
     @.events.emit 'searching'
 
-
+  results: (response) =>
+    if response?.data?.search?
+      @.events.emit 'result', response.data.search
 
   validate: (result) =>
 
@@ -521,13 +558,25 @@ class AjaxSearch
 
     @.events.emit('results-prep', result)
 
-
-
   prepResults: (results) =>
 
+    # Cleaning up our JSON Data for Handlebars
+
+    if results.total < 1
+      results.total = false
+
+    if results.next < 1
+      results.next = false
+
+    if results.previous < 1
+      results.previous = false
+
+    if results.next or results.previous
+      results.pagination = true
+
+    results.query = @_properties.query._search
+
     @.events.emit('results-ready', results)
-
-
 
   showPage: (result) =>
 
@@ -539,13 +588,9 @@ class AjaxSearch
 
     @.events.emit('results-rendered', result)
 
-
-
   extend: =>
     this
     # Easy way for object extenders to gain a constructor
-
-
 
 class GoogleSearch extends AjaxSearch
 
@@ -576,12 +621,13 @@ class GoogleSearch extends AjaxSearch
       if target?
         target.onclick = (e) =>
 
-          @_properties.query.start = "start="+result[0].pagination.previousPage[0].startIndex
+          @_properties.paginationOffsetBy = result.previous - 1
 
           @.events.emit 'search', @_properties.query._search
+
       this
 
-    if result[0].pagination.previousPage then bindPrevious()
+    if result.previous > 0 then bindPrevious()
 
 
 
@@ -591,13 +637,14 @@ class GoogleSearch extends AjaxSearch
       if target?
         target.onclick = (e) =>
 
-          @_properties.query.start = "start="+result[0].pagination.nextPage[0].startIndex
+          @_properties.paginationOffsetBy = result.next - 1
 
           @.events.emit 'search', @_properties.query._search
 
       this
 
-    if result[0].pagination.nextPage then bindNext()
+    # Need to get this working again
+    if result.next > 0 then bindNext()
 
 
 
