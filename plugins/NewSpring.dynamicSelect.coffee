@@ -39,32 +39,31 @@ class DynamicSelect
     
     
   updateDynamicLink: () ->
-  
     # get the select that triggered the event
     dynamicSelect = 
       document.querySelectorAll('[data-dynamic-select="' + @_properties._id + '"]')[0]
   
     # get the matching button that needs to be updated
-    dynamicLink = 
-      document.querySelectorAll('[data-dynamic-link="' + @_properties._id + '"]')[0]
-      
+    dynamicLinkCTA = 
+      document.querySelectorAll('[data-dynamic-link-cta="' + @_properties._id + '"]')[0]
+
     # get the link from the select
     dynamicSelectLink = dynamicSelect.value
 
-    # set the dynamicLink to the dynamicSelectLink
-    dynamicLink.href = dynamicSelectLink
+    # set the dynamicLinkCTA to the dynamicSelectLink
+    dynamicLinkCTA.href = dynamicSelectLink
 
     # update the classes on the button
-    @.toggleClasses(dynamicSelect, dynamicLink)
+    @.toggleClasses(dynamicSelect, dynamicLinkCTA)
 
 
-  toggleClasses: (dynamicSelect, dynamicLink) ->
+  toggleClasses: (dynamicSelect, dynamicLinkCTA) ->
     
     # Toggle the active / disabled link classes
     if dynamicSelect.value
-      core.removeClass dynamicLink, "disabled"
+      core.removeClass dynamicLinkCTA, "disabled"
     else
-      core.addClass dynamicLink, "disabled"
+      core.addClass dynamicLinkCTA, "disabled"
       
 
   bindChange: =>
