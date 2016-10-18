@@ -29,25 +29,26 @@ class FullScreen
 
     @_properties = {
       target : @data
-      height : params[1]
-      width : params[2]
+      # height : params[1]
+      # width : params[2]
       id: params[0]
-
+      mobile : params[1]
     }
 
-    @.bindResize @_properties.target
-
+    if @_properties.mobile and window.matchMedia("(max-width: 480px)").matches
+      @.bindResize @_properties.target
+    else if @_properties.mobile is "undefined" or @_properties.mobile is false
+      @.bindResize @_properties.target
 
   expandElement: =>
-
-
 
     windowHeight = window.innerHeight
     windowWidth = window.innerWidth
 
-    if @_properties.height isnt `undefined`
-      acutalHeight = windowHeight - @_properties.height
-    else acutalHeight = windowHeight
+    acutalHeight = windowHeight
+
+    # if @_properties.height isnt `undefined`
+    #   acutalHeight = windowHeight - @_properties.height
 
     unless @_properties.width is 'false'
       @_properties.target.style.width = windowWidth + "px"
@@ -57,8 +58,6 @@ class FullScreen
 
       if @_properties.target.tagName is 'IFRAME'
         @_properties.target.height = acutalHeight
-
-
 
     this
 
