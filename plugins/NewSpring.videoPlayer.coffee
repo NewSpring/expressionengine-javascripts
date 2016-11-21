@@ -42,14 +42,24 @@ class Player
 				element: @data
 				klass: @data.className
 				code: params[1]
-			params: try JSON.parse(params[2]); catch e then {}
+			params:
+				# try JSON.parse(params[2]); catch e then {}
+				pcode: "E1dWM6UGncxhent7MRATc3hmkzUD"
+				playerBrandingId: "ZmJmNTVlNDk1NjcwYTVkMzAzODkyMjg0"
+				autoplay: true
+				skin: {
+					config: "http://ns.assets.s3.amazonaws.com/newspring/skin.new.json"
+					inline: { shareScreen: { embed: { source: "<iframe width='640' height='480' frameborder='0' allowfullscreen src='//player.ooyala.com/static/v4/stable/4.5.5/skin-plugin/iframe.html?ec=<ASSET_ID>&pbid=<PLAYER_ID>&pcode=<PUBLISHER_ID>'></iframe>" } } }
+				}
 			scriptKeys:
-				ooyala: "//player.ooyala.com/v3/d2ac021eb96c49fdb5d58883c017773e?tweaks=android-enable-hls"
+				ooyala: "//player.ooyala.com/static/v4/stable/4.6.9/core.min.js"
+				plugin: "//player.ooyala.com/static/v4/stable/4.6.9/video-plugin/main_html5.min.js"
+				skin: "//player.ooyala.com/static/v4/stable/4.6.9/skin-plugin/html5-skin.js"
 		}
 
 		# Set defaults
 		@_properties.params.template = @_properties.params.template || 'videoPlayer'
-		@_properties.params.type = @_properties.params.type || 'ooyala'
+		@_properties.params.type = @_properties.params.type || ['ooyala', 'plugin', 'skin']
 		@_properties.params.playerId = @_properties.params.playerId || 'player--ooyala'
 		@_properties.params.autoPlay = @_properties.params.autoPlay || false
 
@@ -79,7 +89,6 @@ class Player
 		this
 
 
-
 	###
 
 	@function loadScripts()
@@ -93,33 +102,47 @@ class Player
 	loadScripts: =>
 
 		# Object containing needed scripts
-
-
-		# Create script
-		script = document.createElement "script"
+		scriptArray = []
 
 		# Set src
-		if @_properties.scriptKeys[@_properties.params.type]?
-			script.setAttribute "src", @_properties.scriptKeys[@_properties.params.type]
-		else
-			le.log "no script key found for #{@_properties.video.type}"
-			false
+		if @_properties.params.type.length > 0
+			for type in @_properties.params.type
+				if @_properties.scriptKeys[type]
+					# Create script
+					script = document.createElement "script"
+					script.setAttribute "src", @_properties.scriptKeys[type]
+					scriptArray.push script
+				else
+					console.log "no script key found for #{@_properties.video.type}"
+					false
+
+		@appendScripts(scriptArray)
+
+		this
+
+	appendScripts: (scriptArray) =>
+
+		callback = =>
+			@.appendScripts(scriptArray)
 
 		# Get all scripts to check against
 		scripts = core.flatten document.getElementsByTagName "script"
 
-		# Filter script to find previously loaded script
-		scrpt = scripts.filter( (attr) =>
-			if attr.attributes["src"]? && attr.attributes["src"].value?
-				return attr.attributes["src"].value is @_properties.scriptKeys[@_properties.params.type]
-		)
+		for scriptItem in scriptArray
+			# Make sure that the script isn't currently loaded
+			scrpt = scripts.filter( (attr) =>
+				if attr.attributes["src"]? && attr.attributes["src"].value?
+					return attr.attributes["src"].value is scriptItem.src
+			)
 
-		# Load script onto page unless it is already in DOM
-		unless scrpt.length > 0 then document.head.appendChild script
-
-		this
-
-
+			unless scrpt.length > 0
+				if scriptItem.src.split(":")[1] is @_properties.scriptKeys.ooyala
+					document.head.appendChild scriptItem
+				else
+					if window.OO
+						document.head.appendChild scriptItem
+					else
+						setTimeout callback, 250
 
 	###
 
@@ -138,7 +161,7 @@ class Player
 	setUpVideo: =>
 
 		# Load ooyala player on click
-		if @_properties.params.type is "ooyala"
+		if "ooyala" in @_properties.params.type
 			unless @_properties.params.autoPlay
 				@_properties.video.element.addEventListener "click", @.setUpOO, false
 			else
@@ -166,7 +189,7 @@ class Player
 	setUpOO: =>
 
 		# See if ooyla script has loaded
-		unless OO?
+		if (typeof window isnt "undefined" || window isnt null) && !window.OO
 
 			###
 
@@ -193,15 +216,8 @@ class Player
 				@_properties.video.player = OO.Player.create(
 					@_properties.params.playerId,
 					@_properties.video.code,
-					{
-						autoplay: true
-						onCreate: (player) =>
-							# bind messages to @_properties object for reporting
-							@_properties.messages = player.mb
-					}
+					@_properties.params
 				)
-
-
 
 				# Destroy video and report it to GA (google)
 				destroy = =>
