@@ -46,9 +46,9 @@ class Player
 				# try JSON.parse(params[2]); catch e then {}
 				pcode: "E1dWM6UGncxhent7MRATc3hmkzUD"
 				playerBrandingId: "ZmJmNTVlNDk1NjcwYTVkMzAzODkyMjg0"
-				autoplay: false
+				autoplay: true
 				skin: {
-					config: "//s3.amazonaws.com/ns.assets/newspring/skin.new.json"
+					config: "//d3n6tjerleuu41.cloudfront.net/newspring/skin.new.json"
 					inline: { shareScreen: { embed: { source: "<iframe width='640' height='480' frameborder='0' allowfullscreen src='//player.ooyala.com/static/v4/stable/4.5.5/skin-plugin/iframe.html?ec=<ASSET_ID>&pbid=<PLAYER_ID>&pcode=<PUBLISHER_ID>'></iframe>" } } }
 				}
 			scriptKeys:
