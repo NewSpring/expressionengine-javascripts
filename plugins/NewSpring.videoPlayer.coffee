@@ -49,12 +49,11 @@ class Player
 				autoplay: true
 				skin: {
 					config: "//d3n6tjerleuu41.cloudfront.net/newspring/skin.new.json"
-					inline: { shareScreen: { embed: { source: "<iframe width='640' height='480' frameborder='0' allowfullscreen src='//player.ooyala.com/static/v4/stable/4.5.5/skin-plugin/iframe.html?ec=<ASSET_ID>&pbid=<PLAYER_ID>&pcode=<PUBLISHER_ID>'></iframe>" } } }
 				}
 			scriptKeys:
 				ooyala: "//player.ooyala.com/static/v4/stable/4.6.9/core.min.js"
 				plugin: "//player.ooyala.com/static/v4/stable/4.6.9/video-plugin/main_html5.min.js"
-				skin: "//player.ooyala.com/static/v4/stable/4.6.9/skin-plugin/html5-skin.js"
+				skin: "//player.ooyala.com/static/v4/stable/4.6.9/skin-plugin/html5-skin.min.js"
 		}
 
 		# Set defaults
@@ -132,7 +131,7 @@ class Player
 			# Make sure that the script isn't currently loaded
 			scrpt = scripts.filter( (attr) =>
 				if attr.attributes["src"]? && attr.attributes["src"].value?
-					return attr.attributes["src"].value is scriptItem.src
+					return attr.attributes["src"].value is scriptItem.src.split(":")[1]
 			)
 
 			unless scrpt.length > 0
