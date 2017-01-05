@@ -262,6 +262,7 @@ class BackgroundPlayer
   setCSS: =>
     # Parent styles
     @_properties.parent.style.overflow = "hidden"
+    @_properties.parent.style.position = "absolute"
 
     # Element styles
     @_properties.bg.element.style.display = "block"
