@@ -54,11 +54,12 @@ class Player
 				ooyala: "//player.ooyala.com/static/v4/stable/4.6.9/core.min.js"
 				plugin: "//player.ooyala.com/static/v4/stable/4.6.9/video-plugin/main_html5.min.js"
 				skin: "//player.ooyala.com/static/v4/stable/4.6.9/skin-plugin/html5-skin.min.js"
+				bitRate: "//player.ooyala.com/static/v4/stable/4.6.9/video-plugin/bit_wrapper.min.js"
 		}
 
 		# Set defaults
 		@_properties.params.template = @_properties.params.template || 'videoPlayer'
-		@_properties.params.type = @_properties.params.type || ['ooyala', 'plugin', 'skin']
+		@_properties.params.type = @_properties.params.type || ['ooyala', 'plugin', 'skin','bitRate']
 		@_properties.params.playerId = @_properties.params.playerId || 'player--ooyala'
 		@_properties.params.autoPlay = @_properties.params.autoPlay || false
 
