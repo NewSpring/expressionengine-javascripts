@@ -47,6 +47,15 @@ class FullScreen
 
     acutalHeight = windowHeight
 
+    images = @_properties.target.getElementsByTagName 'img'
+    if images.length isnt 0
+      for image in images
+        expandedSize = image.width * (windowHeight / image.height)
+        offsetLeft = (expandedSize - windowWidth) / 2
+
+        if offsetLeft > 0
+          image.style.left = "-" + offsetLeft + "px"
+
     # if @_properties.height isnt `undefined`
     #   acutalHeight = windowHeight - @_properties.height
 
@@ -61,8 +70,6 @@ class FullScreen
 
     this
 
-
-
   bindResize: (element) =>
 
     debounce = null
@@ -72,8 +79,6 @@ class FullScreen
     window.addEventListener "resize", debounce, false
 
     @.expandElement()
-
-
 
 if core?
   core.addPlugin('FullScreen', FullScreen, '[data-fullscreen]')
