@@ -190,8 +190,6 @@ class BackgroundPlayer
 
     this
 
-
-
   ###
 
   @function buildElement()
@@ -277,8 +275,8 @@ class BackgroundPlayer
     # @_properties.bg.element.style.zIndex = "-5px"
     @_properties.bg.element.style.top = "0"
     @_properties.bg.element.style.bottom = "0"
-    @_properties.bg.element.style.left = "0"
-    @_properties.bg.element.style.right = "0"
+    # @_properties.bg.element.style.left = @_properties.bg.left
+    # @_properties.bg.element.style.right = "0"
     @_properties.bg.element.style.opacity = @_properties.bg.opacity
 
     if core.isMobile() then @_properties.bg.element.style.width = "auto"
@@ -565,6 +563,15 @@ class BackgroundPlayer
 
     # Get parent width
     parentWidth = @.getParentWidth()
+
+    # If the video is larger than the parent width, center the image
+    if @_properties.bg.element.width > parentWidth
+      offsetLeft = (@_properties.bg.element.width - parentWidth) / 2
+      if offsetLeft > 0
+        @_properties.bg.element.style.left = "-" + offsetLeft + "px"
+    else
+      @_properties.bg.element.style.left = "0"
+      @_properties.bg.element.style.right = "0"
 
     # Offset on x axis
     # switch @_properties.bg.xaxis
