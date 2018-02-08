@@ -12,7 +12,7 @@
 
 # Create a video modal
 createVideoModal = ->
-  
+
   # Create a new div element 
   videoPlayerContainer = document.createElement('div')
 
@@ -46,10 +46,26 @@ destroyVideo = (modal) ->
 
   return
 
+# Configure wistia player options
+playerOptions = {
+  playerColor: '6bac43',
+  videoFoam: true,
+  autoPlay: true,
+  fullscreenButton: true
+}
+
+# Convert player options to string
+playerOptionsString = ''
+
+for option of playerOptions
+  if playerOptions.hasOwnProperty(option)
+    option
+    playerOptionsString += option + '=' + playerOptions[option] + ' '
+
 # Get data-video elements on page and create an array
 videos = document.querySelectorAll('[data-video]')
 
-# If page has videos, run createVideoModal to create video modal on page			
+# If page has videos, run createVideoModal to create video modal on page      
 if videos.length >= 1
   createVideoModal()
 
@@ -99,7 +115,7 @@ while i < videos.length
     # Generate Wistia player HTML
     playerHtml = '<div class="wistia_responsive_padding" style="padding:56.25% 0 0 0;position:relative;">' + 
     '<div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">' + 
-    '<div class="wistia_embed wistia_async_' + videoHash + ' videoFoam=true autoPlay=true" style="height:100%;width:100%">&nbsp;</div>' + 
+    '<div class="wistia_embed wistia_async_' + videoHash + ' ' + playerOptionsString + '" style="height:100%;width:100%">&nbsp;</div>' + 
     '</div>' + '</div>'
 
     # Add Wistia player HTML
