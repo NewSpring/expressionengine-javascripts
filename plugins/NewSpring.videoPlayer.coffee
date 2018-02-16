@@ -3,317 +3,136 @@
 @class NewSpringPlayer
 
 @author
-	James E Baxley III
-	NewSpring Church
+  Brian Kalwat
+  NewSpring Church
 
-@version 0.1
+@version 2.0
 
 ###
-class Player
 
-	###
-	Constructor function runs when object gets initialized
+# Create a video modal
+createVideoModal = ->
 
-	@param {Element} Element to be used for creating video and image fallback
-
-	###
-	constructor: (@data, attr) ->
+  # Create a new div element 
+  videoPlayerContainer = document.createElement('div')
 
-		# Check and see if called by jQuery and convert to node
-		if @data instanceof jQuery then @data = @data.get(0)
+  # Add modal class to element
+  videoPlayerContainer.classList.add 'modal'
 
-		# get id for namespace
-		params = @data.attributes[attr].value.split(',')
+  # Add data-modal attribute + value to element
+  videoPlayerContainer.dataset.modal = 'videoPlayer'
 
-		# clean up whitespace
-		params = params.map (param) -> param.trim()
+  # Add modal contents to element
+  videoPlayerContainer.innerHTML = '<div id="player--wistia"></div>' + 
+  '<div class="icon icon--close-modal fa fw fa-times" data-modal-close="videoPlayer"></div>'
 
-		if params.length > 3
-			meta = params.splice(0, 2)
-			json = params.join(',')
-			params = meta.concat json
+  # Append element to document body
+  document.body.append videoPlayerContainer
 
+  return
 
-		#bind element and properties to private @_properties variable
-		@_properties = {
-			_id: params[0]
-			#this is where we store info about the video/image
-			video:
-				element: @data
-				klass: @data.className
-				code: params[1]
-			params:
-				# try JSON.parse(params[2]); catch e then {}
-				pcode: "E1dWM6UGncxhent7MRATc3hmkzUD"
-				playerBrandingId: "ZmJmNTVlNDk1NjcwYTVkMzAzODkyMjg0"
-				autoplay: true
-				skin: {
-					config: "//d3n6tjerleuu41.cloudfront.net/newspring/skin.new.json"
-				}
-			scriptKeys:
-				ooyala: "//player.ooyala.com/static/v4/stable/4.6.9/core.min.js"
-				plugin: "//player.ooyala.com/static/v4/stable/4.6.9/video-plugin/main_html5.min.js"
-				skin: "//player.ooyala.com/static/v4/stable/4.6.9/skin-plugin/html5-skin.min.js"
-				bitRate: "//player.ooyala.com/static/v4/stable/4.6.9/video-plugin/bit_wrapper.min.js"
-		}
 
-		# Set defaults
-		@_properties.params.template = @_properties.params.template || 'videoPlayer'
-		@_properties.params.type = @_properties.params.type || ['ooyala', 'plugin', 'skin','bitRate']
-		@_properties.params.playerId = @_properties.params.playerId || 'player--ooyala'
-		@_properties.params.autoPlay = @_properties.params.autoPlay || false
+# Destroy video (should not remove modal element from page)
+destroyVideo = (modal) ->
 
-		# Initiating Function
-		@
-			.loadScripts()
-			.loadModal()
-			.setUpVideo()
+  # Clear out wistia embed code
+  modal.querySelector('#player--wistia').innerHTML = ''
 
+  # Remove active class from modal to make it disappear
+  modal.classList.remove 'modal--active'
 
-	loadModal: =>
+  # Remove modal--opened class from html that locks scrolling
+  document.querySelector('html').classList.remove 'modal--opened'
 
-		Modal = core['plugins']['Modal']
+  return
 
+# Configure wistia player options
+playerOptions = {
+  playerColor: '6bac43',
+  videoFoam: true,
+  autoPlay: true,
+  fullscreenButton: true
+}
 
-		if Modal?
-			if core.modal?
-				if core.modal[@_properties.params.template] is undefined
-					tmpl = @_properties.params.template
-					core.modal[tmpl] = new Modal.model tmpl, 'data-modal-open', "preload"
+# Convert player options to string
+playerOptionsString = ''
 
-			else
-				core.modal = {}
-				tmpl = @_properties.params.template
-				core.modal[tmpl] = new Modal.model tmpl, 'data-modal-open', "preload"
+for option of playerOptions
+  if playerOptions.hasOwnProperty(option)
+    option
+    playerOptionsString += option + '=' + playerOptions[option] + ' '
 
-		this
+# Get data-video elements on page and create an array
+videos = document.querySelectorAll('[data-video]')
 
+# If page has videos, run createVideoModal to create video modal on page      
+if videos.length >= 1
+  createVideoModal()
 
-	###
+# Bind click events to elements with data-video
+i = 0
+while i < videos.length
 
-	@function loadScripts()
+  # Set trigger to element of loop instance
+  trigger = videos[i]
 
-	@note
-		loads needed scripts on the page for embeded video
+  trigger.onclick = ->
 
-	@chainable
+    # Set video modal
+    videoModal = document.querySelector('[data-modal="videoPlayer"]')
 
-	###
-	loadScripts: =>
+    # Set video modal close trigger
+    videoModalClose = videoModal.querySelector('[data-modal-close]')
 
-		# Object containing needed scripts
-		scriptArray = []
+    # Bind destroyVideo function to videoModalClose element
+    videoModalClose.onclick = ->
 
-		# Set src
-		if @_properties.params.type.length > 0
-			for type in @_properties.params.type
-				if @_properties.scriptKeys[type]
-					# Create script
-					script = document.createElement "script"
-					script.setAttribute "src", @_properties.scriptKeys[type]
-					scriptArray.push script
-				else
-					console.log "no script key found for #{@_properties.video.type}"
-					false
+      destroyVideo videoModal
 
-		@appendScripts(scriptArray)
+      return
 
-		this
+    # Set target element
+    target = document.querySelector('#player--wistia')
 
-	appendScripts: (scriptArray) =>
+    # Get data-video value and create array
+    dataVideo = @getAttribute('data-video').split(',')
 
-		callback = =>
-			@.appendScripts(scriptArray)
+    # Get Wistia hash and trim spaces
+    videoHash = dataVideo[1].trim(' ')
 
-		# Get all scripts to check against
-		scripts = core.flatten document.getElementsByTagName "script"
+    # Set Wistia embed script url
+    wistiaEmbedScript = document.createElement('script')
+    wistiaEmbedScript.type = 'text/javascript'
+    wistiaEmbedScript.setAttribute 'async', ''
+    wistiaEmbedScript.src = 'https://fast.wistia.com/embed/medias/' + videoHash + '.jsonp'
 
-		for scriptItem in scriptArray
-			# Make sure that the script isn't currently loaded
-			scrpt = scripts.filter( (attr) =>
-				if attr.attributes["src"]? && attr.attributes["src"].value?
-					return attr.attributes["src"].value is scriptItem.src.split(":")[1]
-			)
+    # Set Wistia asset script url
+    wistiaAssetScript = document.createElement('script')
+    wistiaAssetScript.type = 'text/javascript'
+    wistiaAssetScript.setAttribute 'async', ''
+    wistiaAssetScript.src = 'https://fast.wistia.com/assets/external/E-v1.js'
 
-			unless scrpt.length > 0
-				if scriptItem.src.split(":")[1] is @_properties.scriptKeys.ooyala
-					document.head.appendChild scriptItem
-				else
-					if window.OO
-						document.head.appendChild scriptItem
-					else
-						setTimeout callback, 250
+    # Generate Wistia player HTML
+    playerHtml = '<div class="wistia_responsive_padding" style="padding:56.25% 0 0 0;position:relative;">' + 
+    '<div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">' + 
+    '<div class="wistia_embed wistia_async_' + videoHash + ' ' + playerOptionsString + '" style="height:100%;width:100%">&nbsp;</div>' + 
+    '</div>' + '</div>'
 
-	###
+    # Add Wistia player HTML
+    target.innerHTML = playerHtml
 
-	@function setUpVideo()
+    # Add Wistia embed script
+    target.append wistiaEmbedScript
 
-	@note
-		Router function for video setup based on type
+    # Add Wistia asset script
+    target.append wistiaAssetScript
 
-	@todo
-		Write way to dynamically call function based on @_properties.video.type
-		DO NOT USE EVAL
+    # Activate player modal
+    target.parentNode.classList.add 'modal--active'
 
-	@chainable
+    # Add modal opened class to html element
+    document.querySelector('html').classList.add 'modal--opened'
 
-	###
-	setUpVideo: =>
+    return
 
-		# Load ooyala player on click
-		if "ooyala" in @_properties.params.type
-			unless @_properties.params.autoPlay
-				@_properties.video.element.addEventListener "click", @.setUpOO, false
-			else
-				@.setUpOO()
-				@_properties.video.element.addEventListener "click", @.setUpOO, false
-
-
-		this
-
-
-
-	###
-
-	@function setUpOO()
-
-	@note
-		Setting up ooyala videos
-
-	@todo
-		Explore OO API for more powerful scripting
-
-	@chainable
-
-	###
-	setUpOO: =>
-
-		# See if ooyla script has loaded
-		if (typeof window isnt "undefined" || window isnt null) && !window.OO
-
-			###
-
-			@todo
-			Set up better error handling.
-			Would like to have it try to load script again
-			If countinues to fail then load error and send to GA
-
-			###
-			callback = =>
-				@.setUpOO()
-
-			setTimeout callback, 250
-
-
-		else
-
-			# Wait until ooyla script is ready to go
-			OO.ready( =>
-
-				# Show the modal
-				core.modal[@_properties.params.template].toggleModal()
-				# Create video element into player--video container based on embed code
-				@_properties.video.player = OO.Player.create(
-					@_properties.params.playerId,
-					@_properties.video.code,
-					@_properties.params
-				)
-
-				# Destroy video and report it to GA (google)
-				destroy = =>
-					@.reportEvent "destroyed"
-					@_properties.video.player.destroy @_properties.params.playerId
-
-
-
-				# esc function to close modal and call destroy or play and pause on keyup
-				listen = (event) =>
-					# if key hit is `esc` or template is closed is clicked
-					if event.keyCode is 27 or core.isElement(event)
-
-						# Destroy video
-						destroy()
-						if event.keyCode is 27 then core.modal[@_properties.params.template].toggleModal()
-
-						# remove listener
-						document.removeEventListener "keyup", listen, false
-
-					# if key hit is `space` then pause or play
-					else if event.keyCode is 32
-						if @_properties.video.player.state is "paused"
-							@_properties.video.player.play()
-						else @_properties.video.player.pause()
-
-
-				# Add event listeners for keyup and clicking of close button
-				document.addEventListener "keyup", listen, false
-				core.modal[@_properties.params.template].events.on('close', listen)
-
-				###
-
-				Playing events
-
-				###
-				@_properties.messages.subscribe OO.EVENTS.PLAYBACK_READY, "Video", (eventName) =>
-					@.reportEvent eventName
-
-				@_properties.messages.subscribe OO.EVENTS.PLAYED, "Video", (eventName) =>
-
-					destroy()
-					core.modal[@_properties.params.template].toggleModal()
-					@.reportEvent eventName
-
-
-				###
-
-				Error Events
-
-				###
-				@_properties.messages.subscribe OO.EVENTS.PLAY_FAILED, "Video", (eventName) =>
-					@.reportEvent eventName
-
-				@_properties.messages.subscribe OO.EVENTS.BUFFERED, "Video", (eventName) =>
-					@.reportEvent eventName
-
-				###
-
-				UI Events
-
-				###
-
-				# define fullscreen as not set
-				fullscreen = false
-
-				@_properties.messages.subscribe OO.EVENTS.FULLSCREEN_CHANGED, "Video", (eventName) =>
-
-					fullscreen = !fullscreen
-					if fullscreen
-						eventName = "Fullscreen"
-						@.reportEvent eventName
-
-			)
-
-		this
-
-
-
-	###
-
-	@function reportEvent()
-
-	@param {String} Event name for posting to GA
-
-	@chainable
-
-	###
-	reportEvent: (event) =>
-
-		if ga?
-			ga "send", "event", "video", event, {'page': window.location.pathname}
-
-		this
-
-
-
-if core?
-	core.addPlugin('Player', Player, '[data-video]')
+  i++
