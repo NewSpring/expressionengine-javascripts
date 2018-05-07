@@ -23,7 +23,7 @@ createVideoModal = ->
   videoPlayerContainer.dataset.modal = 'videoPlayer'
 
   # Add modal contents to element
-  videoPlayerContainer.innerHTML = '<div id="player--wistia"></div>' + 
+  videoPlayerContainer.innerHTML = '<div id="player--wistia" style="max-width: 600px; margin: 160px auto 0;"></div>' + 
   '<div class="icon icon--close-modal fa fw fa-times" data-modal-close="videoPlayer"></div>'
 
   # Append element to document body
