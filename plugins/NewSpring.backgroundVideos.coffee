@@ -404,8 +404,10 @@ class BackgroundPlayer
 
     # Set loop to true
     @_properties.bg.element.loop = true
+    @_properties.bg.element.autoplay = true
 
     # Mute video
+    @_properties.bg.element.muted = true
     @_properties.bg.element.volume = 0
 
     # Start playing video
