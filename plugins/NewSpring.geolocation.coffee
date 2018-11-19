@@ -20,7 +20,7 @@ class Googleapis
 
     @_properties =
       scripts:
-        googleapis: "https://maps.googleapis.com/maps/api/js?v=3.exp" +
+        googleapis: "https://maps.googleapis.com/maps/api/js?key=AIzaSyDC2wC3SObo3uq8cASlEKOUAiHygTQPycc&v=3.exp" +
           "&callback=googleapis.initialize"
       img: "//s3.amazonaws.com/ns.images/newspring/locations/newspring.mapmarker.png"
       maps: []
